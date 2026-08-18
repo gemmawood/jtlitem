@@ -175,6 +175,7 @@ You'll also miss out of the JSON constraint on the column, but this is not a con
 ## Change Log
 ### v2.0.0, August 18, 2026
 * Re-exported from APEX 26.1 (current `wwv_flow_imp` export format). Older APEX versions should continue using v1.4.0.
+* Refreshed demo app: [demo/f9107.sql](demo/f9107.sql) — APEX 26.1 export with Universal Theme refreshed, compatibility mode 26.1, legacy JavaScript/jQuery Migrate includes removed, and a new Form Region page demonstrating the modern processes against a native JSON column. The original [demo/f107.sql](demo/f107.sql) remains for older APEX versions.
 * Verified end-to-end on APEX 26.1 / Oracle 23ai — form pages, translation dialog, per-language validation, and Interactive Grid all work with no plugin code changes.
 * Native `JSON` datatype columns documented with a verified support matrix (see [Native JSON Columns](#native-json-columns-oracle-21c23ai)) and a new example, [demo/px_projects_json.sql](demo/px_projects_json.sql).
 * Fixed [demo/px_projects2_vl.sql](demo/px_projects2_vl.sql): replaced the legacy `apex_json.to_xmltype`/`xmltable` extraction with `JSON_TABLE` — the old technique fails to compile (`PLS-306`) against JSON-typed columns.
