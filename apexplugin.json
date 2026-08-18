@@ -1,7 +1,7 @@
 {
   "name" : "JTL Item - Multi-Translations with JSON",
-  "version" : "1.4.0",
-  "description" : "Store multi-language translations (MLS) in a single JSON column and use this Item plugin to easily maintain them.\nNow with Interactive Grid support. (For the APEX 5.0 version use v1.1.0)",
+  "version" : "2.0.0",
+  "description" : "Store multi-language translations (MLS) in a single JSON column and use this Item plugin to easily maintain them.\nNow with Interactive Grid support and native JSON datatype columns (23ai+). v2.0.0 is exported from APEX 26.1; for APEX 5.1-20.x use v1.4.0, for APEX 5.0 use v1.1.0.",
   "keywords" : ["MLS", "IG", "multi-language", "language", "translations", "translated", "JSON", "Interactive Grid"],
   "homepage" : "https://github.com/rimblas/jtlitem",
   "bugs" : {
@@ -20,9 +20,9 @@
     "url" : "https://github.com/rimblas/jtlitem.git"
   },
   "oracle" : {
-    "versions" : ["11.2.0.1", "12.1.0.2.0"],
+    "versions" : ["19c", "21c", "23ai"],
     "apex" : {
-      "versions" : ["5.1.0", "18.1", "18.2", "19.1", "19.2", "20.1"],
+      "versions" : ["26.1"],
       "plugin" : {
         "internalName" : "JMR.MLS.JTLITEM",
         "type" : "item",

@@ -110,6 +110,27 @@ where id <> nvl(:P25_ID, -1)
 
 Also, the plugin `render` and `validate` functions are part of the `tk_jtl_plugin` package. You'll want to **remove the code** from the Plugin Source and change the render and validate functions to `tk_jtl_plugin.render` and `tk_jtl_plugin.validate` respectively.  [Moving the code to the database](https://rimblas.com/blog/2020/05/move-your-apex-plugin-plsql-code-to-the-database/) will greatly increase the load speed of all your plugins.
 
+## Native JSON Columns (Oracle 21c/23ai+)
+
+On Oracle 21c and later you can declare the `_JTL` column with the native `JSON` datatype instead of `varchar2` + `is json (strict)`:
+
+```sql
+name_jtl      json
+```
+
+Benefits: validity is inherent to the type (no check constraint needed), binary (OSON) storage with no 32k byte ceiling under multi-byte character sets, and `JSON_TABLE` works against it unchanged. See [demo/px_projects_json.sql](demo/px_projects_json.sql).
+
+**Support matrix**, verified with this demo app on APEX 26.1 / Oracle 23ai:
+
+| Access path | JSON-typed `_JTL` column |
+|---|---|
+| Form Region (19.1+ Form Initialization / Automatic Row Processing) | Works — full round trip verified |
+| Interactive Grid | Works — verified |
+| `JSON_TABLE` views (`_VL`) | Work unchanged |
+| Classic v5-era processes (Automatic Row Fetch / Automatic Row Processing (DML)) | **Fetch silently returns NULL** — writes work, but the item renders empty over a populated row, and saving that form would wipe existing translations |
+
+If a page still uses the classic processes (as this repo's original demo app does), either convert it to a Form Region or keep the column `VARCHAR2`/`CLOB`. Also note the legacy `apex_json.to_xmltype`/`xmltable` extraction (the 11g section below) does not compile against JSON-typed columns (`PLS-306`) — use `JSON_TABLE`.
+
 ## Why JSON?
 If you ever had to create a multi-language app, you know that a typical approach is to store the translated values on a translation table. Therefore, every translated entity (table) will require a child table with translations. This design pattern is cumbersome to work with and comes with significan application overhead.
 The JSON Translation concept, or JTL for short, has several benefits for APEX applications:
@@ -152,6 +173,12 @@ You'll also miss out of the JSON constraint on the column, but this is not a con
 * You found something? Please report an [Issue](https://github.com/rimblas/jtlitem/issues).
 
 ## Change Log
+### v2.0.0, August 18, 2026
+* Re-exported from APEX 26.1 (current `wwv_flow_imp` export format). Older APEX versions should continue using v1.4.0.
+* Verified end-to-end on APEX 26.1 / Oracle 23ai — form pages, translation dialog, per-language validation, and Interactive Grid all work with no plugin code changes.
+* Native `JSON` datatype columns documented with a verified support matrix (see [Native JSON Columns](#native-json-columns-oracle-21c23ai)) and a new example, [demo/px_projects_json.sql](demo/px_projects_json.sql).
+* Fixed [demo/px_projects2_vl.sql](demo/px_projects2_vl.sql): replaced the legacy `apex_json.to_xmltype`/`xmltable` extraction with `JSON_TABLE` — the old technique fails to compile (`PLS-306`) against JSON-typed columns.
+
 ### v1.4.0, June 15, 2020
 * Default Language to "application primary language" when apex_util.get_session_lang is empty
 
