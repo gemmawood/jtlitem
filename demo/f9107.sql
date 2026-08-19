@@ -580,7 +580,7 @@ wwv_flow_imp_shared.create_plugin(
 '',
 'For better plugin render performance switch from the inline code to the package code.  Change the render, metadata, and validate procedures to tk_jtl_plugin.render, tk_jtl_plugin.metadata and tk_jtl_plugin.validate. Then REMOVE the inline code or you'
 ||' will not get the performance improvement.'))
-,p_version_identifier=>'1.4.0'
+,p_version_identifier=>'2.0.0'
 ,p_about_url=>'https://github.com/rimblas/jtlitem'
 ,p_files_version=>2461271101422
 );
@@ -1560,6 +1560,16 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
 ,p_list_item_current_for_pages=>'2,3'
 );
+wwv_flow_imp_shared.create_list_item(
+ p_id=>wwv_flow_imp.id(4975111111111111)
+,p_list_item_display_sequence=>50
+,p_list_item_link_text=>'Form Region (JSON)'
+,p_static_id=>'form-region-json'
+,p_list_item_link_target=>'f?p=&APP_ID.:7:&SESSION.::&DEBUG.'
+,p_parent_list_item_id=>wwv_flow_imp.id(477554537409002047)
+,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
+,p_list_item_current_for_pages=>'7'
+);
 end;
 /
 prompt --application/shared_components/navigation/listentry
@@ -1687,6 +1697,15 @@ wwv_flow_imp_shared.create_menu_option(
 ,p_static_id=>'projects'
 ,p_link=>'f?p=&APP_ID.:2:&SESSION.::&DEBUG.'
 ,p_page_id=>2
+);
+wwv_flow_imp_shared.create_menu_option(
+ p_id=>wwv_flow_imp.id(4975111111111112)
+,p_parent_id=>wwv_flow_imp.id(477554887766002050)
+,p_option_sequence=>50
+,p_short_name=>'Form Region JTL'
+,p_static_id=>'form-region-jtl'
+,p_link=>'f?p=&APP_ID.:7:&SESSION.::&DEBUG.'
+,p_page_id=>7
 );
 end;
 /
@@ -3591,8 +3610,23 @@ wwv_flow_imp_page.create_page(
 ,p_autocomplete_on_off=>'ON'
 ,p_step_template=>4073832297226169690
 ,p_page_template_options=>'#DEFAULT#'
-,p_help_text=>'Test page - native form region and processes for the JTL item plugin against JSON-typed columns.'
+,p_help_text=>'Form Region (19.1+) on PX_PROJECTS2 JSON-typed columns. Classic Automatic Row Fetch on page 3 returns NULL for the same columns; this page is the working path.'
 ,p_page_component_map=>'02'
+);
+wwv_flow_imp_page.create_page_plug(
+ p_id=>wwv_flow_imp.id(4975111111111115)
+,p_plug_name=>'Breadcrumbs'
+,p_static_id=>'breadcrumbs'
+,p_region_template_options=>'#DEFAULT#:t-BreadcrumbRegion--useBreadcrumbTitle'
+,p_component_template_options=>'#DEFAULT#'
+,p_plug_template=>2532939663579242476
+,p_plug_display_sequence=>5
+,p_plug_display_point=>'REGION_POSITION_01'
+,p_plug_item_display_point=>'ABOVE'
+,p_location=>null
+,p_menu_id=>wwv_flow_imp.id(477554533962002039)
+,p_plug_source_type=>'NATIVE_BREADCRUMB'
+,p_menu_template_id=>4073839682315169711
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(4973937214329984)
@@ -3643,6 +3677,37 @@ wwv_flow_imp_page.create_page_button(
 ,p_grid_new_row=>'Y'
 ,p_database_action=>'UPDATE'
 );
+wwv_flow_imp_page.create_page_button(
+ p_id=>wwv_flow_imp.id(4975111111111113)
+,p_button_sequence=>30
+,p_button_plug_id=>wwv_flow_imp.id(4973937214329984)
+,p_button_name=>'CANCEL'
+,p_static_id=>'cancel'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>4073839297780169708
+,p_button_image_alt=>'Cancel'
+,p_button_position=>'CLOSE'
+,p_button_redirect_url=>'f?p=&APP_ID.:2:&SESSION.::&DEBUG.'
+,p_grid_new_row=>'Y'
+);
+wwv_flow_imp_page.create_page_button(
+ p_id=>wwv_flow_imp.id(4975111111111114)
+,p_button_sequence=>40
+,p_button_plug_id=>wwv_flow_imp.id(4973937214329984)
+,p_button_name=>'DELETE'
+,p_static_id=>'delete'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>4073839297780169708
+,p_button_image_alt=>'Delete'
+,p_button_position=>'DELETE'
+,p_button_execute_validations=>'N'
+,p_button_condition=>'P7_ID'
+,p_button_condition_type=>'ITEM_IS_NOT_NULL'
+,p_grid_new_row=>'Y'
+,p_database_action=>'DELETE'
+);
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(4974405314329985)
 ,p_name=>'P7_ACTIVE_IND'
@@ -3685,20 +3750,22 @@ wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(4974266591329984)
 ,p_name=>'P7_DESCRIPTION_JTL'
 ,p_source_data_type=>'VARCHAR2'
+,p_is_required=>true
 ,p_item_sequence=>30
 ,p_item_plug_id=>wwv_flow_imp.id(4973937214329984)
 ,p_item_source_plug_id=>wwv_flow_imp.id(4973937214329984)
 ,p_prompt=>'Description'
 ,p_source=>'DESCRIPTION_JTL'
 ,p_display_as=>'PLUGIN_JMR.MLS.JTLITEM'
-,p_cSize=>60
+,p_cSize=>70
 ,p_cMaxlength=>1000
-,p_field_template=>2320077351817916916
+,p_cHeight=>2
+,p_field_template=>2528236951996823187
 ,p_item_template_options=>'#DEFAULT#'
 ,p_is_persistent=>'N'
 ,p_attributes=>wwv_flow_t_plugin_attributes(wwv_flow_t_varchar2(
   'attribute_02', 'return true;',
-  'attribute_03', 'TEXT')).to_clob
+  'attribute_03', 'TEXTAREA')).to_clob
 );
 wwv_flow_imp_page.create_page_item(
  p_id=>wwv_flow_imp.id(4974028043329984)
@@ -4009,12 +4076,8 @@ end;
 prompt --application/deployment/definition
 begin
 wwv_flow_imp.g_varchar2_table := wwv_flow_imp.empty_varchar2_table;
-wwv_flow_imp.g_varchar2_table(1) := 'drop view px_projects2_vl;'||wwv_flow.LF||
-'drop table px_projects2;'||wwv_flow.LF||
-''||wwv_flow.LF||
-'drop view px_jtl_with_clob_vl;'||wwv_flow.LF||
-'drop table px_jt';
-wwv_flow_imp.g_varchar2_table(2) := 'l_with_clob;';
+wwv_flow_imp.g_varchar2_table(1) := 'drop view px_projects_json_vl;'||wwv_flow.LF||'drop table px_projects_json;'||wwv_flow.LF||'drop view px_projects2_vl;'||wwv_flow.LF||'drop table px_projects2;'||wwv_flow.LF||'drop view px_projects_vl;'||wwv_flow.LF||'drop table px_projects;'||wwv_flow.LF||'drop view px_jtl_with_clob_vl;'||wwv_flow.LF||'drop ta';
+wwv_flow_imp.g_varchar2_table(2) := 'ble px_jtl_with_clob;'||wwv_flow.LF||'';
 wwv_flow_imp_shared.create_install(
  p_id=>wwv_flow_imp.id(479968059421043544)
 ,p_get_version_sql_query=>'SELECT OBJECT_NAME FROM SYS.USER_OBJECTS WHERE OBJECT_NAME = ''PX_PROJECTS2'''
@@ -4027,315 +4090,52 @@ end;
 prompt --application/deployment/install/install_all_objects
 begin
 wwv_flow_imp.g_varchar2_table := wwv_flow_imp.empty_varchar2_table;
-wwv_flow_imp.g_varchar2_table(1) := 'create table px_projects ('||wwv_flow.LF||
-'    id            number        generated by default on null as identity ';
-wwv_flow_imp.g_varchar2_table(2) := '(start with 1) primary key not null'||wwv_flow.LF||
-'  , name_jtl      varchar2(500) not null constraint px_projects_';
-wwv_flow_imp.g_varchar2_table(3) := 'tl_ck CHECK (name_jtl is json(strict))'||wwv_flow.LF||
-'  , alias         varchar2(32)'||wwv_flow.LF||
-'  , active_ind    varchar2(1) ';
-wwv_flow_imp.g_varchar2_table(4) := '  not null'||wwv_flow.LF||
-'  , created_by    varchar2(60) default '||wwv_flow.LF||
-'                    coalesce('||wwv_flow.LF||
-'                   ';
-wwv_flow_imp.g_varchar2_table(5) := '     sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'                      , regexp_substr(sys_context(''usere';
-wwv_flow_imp.g_varchar2_table(6) := 'nv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                      , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||
-'   ';
-wwv_flow_imp.g_varchar2_table(7) := '                 )'||wwv_flow.LF||
-'                    not null'||wwv_flow.LF||
-'  , created_on    date         default sysdate not n';
-wwv_flow_imp.g_varchar2_table(8) := 'ull'||wwv_flow.LF||
-'  , updated_by    varchar2(60)'||wwv_flow.LF||
-'  , updated_on    date'||wwv_flow.LF||
-'  , constraint px_projects_ck_active'||wwv_flow.LF||
-'     ';
-wwv_flow_imp.g_varchar2_table(9) := ' check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||
-')'||wwv_flow.LF||
-'enable primary key using index'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-'comment on column px_projects.n';
-wwv_flow_imp.g_varchar2_table(10) := 'ame_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||
-'c';
-wwv_flow_imp.g_varchar2_table(11) := 'reate or replace trigger px_projects_u'||wwv_flow.LF||
-'before update'||wwv_flow.LF||
-'on px_projects'||wwv_flow.LF||
-'referencing old as old new as ne';
-wwv_flow_imp.g_varchar2_table(12) := 'w'||wwv_flow.LF||
-'for each row'||wwv_flow.LF||
-'begin'||wwv_flow.LF||
-'  :new.updated_on := sysdate;'||wwv_flow.LF||
-'  :new.updated_by := coalesce('||wwv_flow.LF||
-'                  ';
-wwv_flow_imp.g_varchar2_table(13) := '       sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'                       , regexp_substr(sys_context(''us';
-wwv_flow_imp.g_varchar2_table(14) := 'erenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                       , sys_context(''userenv'',''session_user'')';
-wwv_flow_imp.g_varchar2_table(15) := ''||wwv_flow.LF||
-'                     );'||wwv_flow.LF||
-'end;'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-''||wwv_flow.LF||
-'insert into PX_PROJECTS (NAME_JTL,ALIAS,ACTIVE_IND) values (''[{"l":';
-wwv_flow_imp.g_varchar2_table(16) := unistr('"en","tl":"Gardening"},{"l":"fr","tl":"Gardening - Fran\00E7ais"},{"l":"es","tl":"Sembrar"}]'',''Garden'',''');
-wwv_flow_imp.g_varchar2_table(17) := 'Y'');'||wwv_flow.LF||
-'insert into PX_PROJECTS (NAME_JTL,ALIAS,ACTIVE_IND) values (''[{"l":"en","tl":"Painting"},{"l":"';
-wwv_flow_imp.g_varchar2_table(18) := unistr('fr","tl":"Painting - Fran\00E7ais"},{"l":"es","tl":"Pintar"}]'',''Paint 2'',''Y'');'||wwv_flow.LF||
-''||wwv_flow.LF||
-'create table px_projects');
-wwv_flow_imp.g_varchar2_table(19) := '2 ('||wwv_flow.LF||
-'    id            number        generated by default on null as identity (start with 1) primary ';
-wwv_flow_imp.g_varchar2_table(20) := 'key not null'||wwv_flow.LF||
-'  , name_jtl      varchar2(500)   not null constraint px_projects2_name_tl_ck CHECK (na';
-wwv_flow_imp.g_varchar2_table(21) := 'me_jtl is json(strict))'||wwv_flow.LF||
-'  , description_jtl varchar2(4000) not null constraint px_projects2_desc_tl_';
-wwv_flow_imp.g_varchar2_table(22) := 'ck CHECK (description_jtl is json(strict))'||wwv_flow.LF||
-'  , alias         varchar2(32)'||wwv_flow.LF||
-'  , active_ind    varchar2';
-wwv_flow_imp.g_varchar2_table(23) := '(1)   not null'||wwv_flow.LF||
-'  , created_by    varchar2(60) default '||wwv_flow.LF||
-'                    coalesce('||wwv_flow.LF||
-'               ';
-wwv_flow_imp.g_varchar2_table(24) := '         sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'                      , regexp_substr(sys_context(''u';
-wwv_flow_imp.g_varchar2_table(25) := 'serenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                      , sys_context(''userenv'',''session_user'')';
-wwv_flow_imp.g_varchar2_table(26) := ''||wwv_flow.LF||
-'                    )'||wwv_flow.LF||
-'                    not null'||wwv_flow.LF||
-'  , created_on    date         default sysdate n';
-wwv_flow_imp.g_varchar2_table(27) := 'ot null'||wwv_flow.LF||
-'  , updated_by    varchar2(60)'||wwv_flow.LF||
-'  , updated_on    date'||wwv_flow.LF||
-'  , constraint px_projects2_ck_active ';
-wwv_flow_imp.g_varchar2_table(28) := 'check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||
-')'||wwv_flow.LF||
-'enable primary key using index'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-''||wwv_flow.LF||
-'comment on column px_projects2.';
-wwv_flow_imp.g_varchar2_table(29) := 'name_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||
-'';
-wwv_flow_imp.g_varchar2_table(30) := 'comment on column px_projects2.description_jtl is ''JSON data with the language as keys. Syntax: [{"l';
-wwv_flow_imp.g_varchar2_table(31) := '": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||
-''||wwv_flow.LF||
-'create or replace trigger px_projects2_u'||wwv_flow.LF||
-'before update'||wwv_flow.LF||
-'on px_';
-wwv_flow_imp.g_varchar2_table(32) := 'projects2'||wwv_flow.LF||
-'referencing old as old new as new'||wwv_flow.LF||
-'for each row'||wwv_flow.LF||
-'begin'||wwv_flow.LF||
-'  :new.updated_on := sysdate;'||wwv_flow.LF||
-'  :new.';
-wwv_flow_imp.g_varchar2_table(33) := 'updated_by := coalesce('||wwv_flow.LF||
-'                         sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'            ';
-wwv_flow_imp.g_varchar2_table(34) := '           , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                    ';
-wwv_flow_imp.g_varchar2_table(35) := '   , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||
-'                     );'||wwv_flow.LF||
-'end;'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-''||wwv_flow.LF||
-'insert into PX_PROJECTS2 ';
-wwv_flow_imp.g_varchar2_table(36) := '(NAME_JTL,DESCRIPTION_JTL,ALIAS,ACTIVE_IND) values (''[{"l":"en","tl":"Name 1 - English"},{"l":"fr","';
-wwv_flow_imp.g_varchar2_table(37) := unistr('tl":"Nom 1 - Fran\00E7ais"},{"l":"es","tl":"Nombre 1 - Espa\00F1ol"}]'',''[{"l":"en","tl":"Desc 1 - English"},');
-wwv_flow_imp.g_varchar2_table(38) := unistr('{"l":"fr","tl":"Desc 1 - Fran\00E7ais"},{"l":"es","tl":"Desc 1 - Espa\00F1ol"}]'',''Nom 1'',''Y'');'||wwv_flow.LF||
-'insert into P');
-wwv_flow_imp.g_varchar2_table(39) := 'X_PROJECTS2 (NAME_JTL,DESCRIPTION_JTL,ALIAS,ACTIVE_IND) values (''[{"l":"en","tl":"Nom 2- English"},{';
-wwv_flow_imp.g_varchar2_table(40) := unistr('"l":"fr","tl":"Nom 2 - Fran\00E7ais"},{"l":"es","tl":"Nom 2 - Espa\00F1ol"}]'',''[{"l":"en","tl":"Desc 2 - Eng');
-wwv_flow_imp.g_varchar2_table(41) := unistr('lish"},{"l":"fr","tl":"Desc 2 - Fran\00E7ais"},{"l":"es","tl":"Desc 2 - Espa\00F1ol"}]'',''Nom 2'',''Y'');'||wwv_flow.LF||
-''||wwv_flow.LF||
-'creat');
-wwv_flow_imp.g_varchar2_table(42) := 'e or replace view px_projects2_vl'||wwv_flow.LF||
-'as'||wwv_flow.LF||
-'with n_tl as ('||wwv_flow.LF||
-'  select /*+ no_merge */ p.id'||wwv_flow.LF||
-'       , t.lang'||wwv_flow.LF||
-'  ';
-wwv_flow_imp.g_varchar2_table(43) := '     , t.tl'||wwv_flow.LF||
-'    from px_projects2 p'||wwv_flow.LF||
-'       , xmltable(''/json/row'' passing apex_json.to_xmltype(p.nam';
-wwv_flow_imp.g_varchar2_table(44) := 'e_jtl)'||wwv_flow.LF||
-'          columns'||wwv_flow.LF||
-'               lang  varchar2(10 char) path ''l'''||wwv_flow.LF||
-'             , tl    varcha';
-wwv_flow_imp.g_varchar2_table(45) := 'r2(50 char) path ''tl'''||wwv_flow.LF||
-'        ) t'||wwv_flow.LF||
-'),'||wwv_flow.LF||
-'d_tl as ('||wwv_flow.LF||
-'  select /*+ no_merge */ p.id'||wwv_flow.LF||
-'       , t.lang'||wwv_flow.LF||
-'       ';
-wwv_flow_imp.g_varchar2_table(46) := ', t.tl'||wwv_flow.LF||
-'    from px_projects2 p'||wwv_flow.LF||
-'       , json_table(p.description_jtl, ''$[*]'''||wwv_flow.LF||
-'          columns ('||wwv_flow.LF||
-'   ';
-wwv_flow_imp.g_varchar2_table(47) := '                lang varchar2(10) path ''$.l'''||wwv_flow.LF||
-'                 , tl   varchar2(1000 char) path ''$.tl''';
-wwv_flow_imp.g_varchar2_table(48) := ''||wwv_flow.LF||
-'                  )'||wwv_flow.LF||
-'        ) t'||wwv_flow.LF||
-')'||wwv_flow.LF||
-'select p.id'||wwv_flow.LF||
-'     , p.name_jtl'||wwv_flow.LF||
-'     , p.description_jtl'||wwv_flow.LF||
-'     , n_t';
-wwv_flow_imp.g_varchar2_table(49) := 'l.lang'||wwv_flow.LF||
-'     , n_tl.tl   name'||wwv_flow.LF||
-'     , d_tl.tl   description'||wwv_flow.LF||
-'     , p.alias'||wwv_flow.LF||
-'     , p.active_ind'||wwv_flow.LF||
-'     , ';
-wwv_flow_imp.g_varchar2_table(50) := 'p.created_by'||wwv_flow.LF||
-'     , p.created_on'||wwv_flow.LF||
-'     , p.updated_by'||wwv_flow.LF||
-'     , p.updated_on'||wwv_flow.LF||
-'  from px_projects2 p'||wwv_flow.LF||
-'     ';
-wwv_flow_imp.g_varchar2_table(51) := ', n_tl'||wwv_flow.LF||
-'     , d_tl'||wwv_flow.LF||
-' where p.id = n_tl.id'||wwv_flow.LF||
-'   and p.id = d_tl.id'||wwv_flow.LF||
-'   and n_tl.lang = d_tl.lang'||wwv_flow.LF||
-'   and n';
-wwv_flow_imp.g_varchar2_table(52) := '_tl.lang = (select nvl(apex_util.get_session_lang,''en'') from dual)'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-''||wwv_flow.LF||
-'create table px_jtl_with_clob ';
-wwv_flow_imp.g_varchar2_table(53) := '('||wwv_flow.LF||
-'    id            number        generated by default on null as identity (start with 1) primary ke';
-wwv_flow_imp.g_varchar2_table(54) := 'y not null'||wwv_flow.LF||
-'  , name_jtl      varchar2(500)   not null constraint px_jtl_with_clob_name_tl_ck CHECK (';
-wwv_flow_imp.g_varchar2_table(55) := 'name_jtl is json(strict))'||wwv_flow.LF||
-'  , description_jtl clob not null constraint px_jtl_with_clob_desc_tl_ck C';
-wwv_flow_imp.g_varchar2_table(56) := 'HECK (description_jtl is json(strict))'||wwv_flow.LF||
-'  , alias         varchar2(32)'||wwv_flow.LF||
-'  , active_ind    varchar2(1) ';
-wwv_flow_imp.g_varchar2_table(57) := '  not null'||wwv_flow.LF||
-'  , created_by    varchar2(60) default '||wwv_flow.LF||
-'                    coalesce('||wwv_flow.LF||
-'                   ';
-wwv_flow_imp.g_varchar2_table(58) := '     sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'                      , regexp_substr(sys_context(''usere';
-wwv_flow_imp.g_varchar2_table(59) := 'nv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                      , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||
-'   ';
-wwv_flow_imp.g_varchar2_table(60) := '                 )'||wwv_flow.LF||
-'                    not null'||wwv_flow.LF||
-'  , created_on    date         default sysdate not n';
-wwv_flow_imp.g_varchar2_table(61) := 'ull'||wwv_flow.LF||
-'  , updated_by    varchar2(60)'||wwv_flow.LF||
-'  , updated_on    date'||wwv_flow.LF||
-'  , constraint px_jtl_with_clob_ck_active'||wwv_flow.LF||
-'';
-wwv_flow_imp.g_varchar2_table(62) := '      check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||
-')'||wwv_flow.LF||
-'enable primary key using index'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-''||wwv_flow.LF||
-'comment on table px_jtl_w';
-wwv_flow_imp.g_varchar2_table(63) := 'ith_clob is ''Demo table to test clobs'';'||wwv_flow.LF||
-''||wwv_flow.LF||
-'comment on column px_jtl_with_clob.name_jtl is ''JSON data w';
-wwv_flow_imp.g_varchar2_table(64) := 'ith the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||
-'comment on column px_jtl';
-wwv_flow_imp.g_varchar2_table(65) := '_with_clob.description_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Proj';
-wwv_flow_imp.g_varchar2_table(66) := 'ect Analysis"}]'';'||wwv_flow.LF||
-'comment on column px_jtl_with_clob.active_ind is ''Is the record enabled Y/N?'';'||wwv_flow.LF||
-'com';
-wwv_flow_imp.g_varchar2_table(67) := 'ment on column px_jtl_with_clob.created_by is ''User that created this record'';'||wwv_flow.LF||
-'comment on column px_';
-wwv_flow_imp.g_varchar2_table(68) := 'jtl_with_clob.created_on is ''Date the record was first created'';'||wwv_flow.LF||
-'comment on column px_jtl_with_clob.';
-wwv_flow_imp.g_varchar2_table(69) := 'updated_by is ''User that last modified this record'';'||wwv_flow.LF||
-'comment on column px_jtl_with_clob.updated_on i';
-wwv_flow_imp.g_varchar2_table(70) := 's ''Date the record was last modified'';'||wwv_flow.LF||
-''||wwv_flow.LF||
-''||wwv_flow.LF||
-'--------------------------------------------------------'||wwv_flow.LF||
-'--';
-wwv_flow_imp.g_varchar2_table(71) := '  DDL for Trigger px_jtl_with_clob_u'||wwv_flow.LF||
-'--------------------------------------------------------'||wwv_flow.LF||
-'create';
-wwv_flow_imp.g_varchar2_table(72) := ' or replace trigger px_jtl_with_clob_u'||wwv_flow.LF||
-'before update'||wwv_flow.LF||
-'on px_jtl_with_clob'||wwv_flow.LF||
-'referencing old as old new ';
-wwv_flow_imp.g_varchar2_table(73) := 'as new'||wwv_flow.LF||
-'for each row'||wwv_flow.LF||
-'begin'||wwv_flow.LF||
-'  :new.updated_on := sysdate;'||wwv_flow.LF||
-'  :new.updated_by := coalesce('||wwv_flow.LF||
-'             ';
-wwv_flow_imp.g_varchar2_table(74) := '            sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||
-'                       , regexp_substr(sys_contex';
-wwv_flow_imp.g_varchar2_table(75) := 't(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||
-'                       , sys_context(''userenv'',''session_u';
-wwv_flow_imp.g_varchar2_table(76) := 'ser'')'||wwv_flow.LF||
-'                     );'||wwv_flow.LF||
-'end;'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-'create or replace view px_jtl_with_clob_vl'||wwv_flow.LF||
-'as'||wwv_flow.LF||
-'with n_tl as ('||wwv_flow.LF||
-'  ';
-wwv_flow_imp.g_varchar2_table(77) := 'select /*+ no_merge */ p.id'||wwv_flow.LF||
-'       , t.lang'||wwv_flow.LF||
-'       , t.tl'||wwv_flow.LF||
-'    from px_jtl_with_clob p'||wwv_flow.LF||
-'       , xmlta';
-wwv_flow_imp.g_varchar2_table(78) := 'ble(''/json/row'' passing apex_json.to_xmltype(p.name_jtl)'||wwv_flow.LF||
-'          columns'||wwv_flow.LF||
-'               lang  varc';
-wwv_flow_imp.g_varchar2_table(79) := 'har2(10 char) path ''l'''||wwv_flow.LF||
-'             , tl    varchar2(50 char) path ''tl'''||wwv_flow.LF||
-'        ) t'||wwv_flow.LF||
-'),'||wwv_flow.LF||
-'d_tl as ('||wwv_flow.LF||
-'  s';
-wwv_flow_imp.g_varchar2_table(80) := 'elect /*+ no_merge */ p.id'||wwv_flow.LF||
-'       , t.lang'||wwv_flow.LF||
-'       , t.tl'||wwv_flow.LF||
-'    from px_jtl_with_clob p'||wwv_flow.LF||
-'       , json_t';
-wwv_flow_imp.g_varchar2_table(81) := 'able(p.description_jtl, ''$[*]'''||wwv_flow.LF||
-'          columns ('||wwv_flow.LF||
-'                   lang varchar2(10) path ''$.l'''||wwv_flow.LF||
-' ';
-wwv_flow_imp.g_varchar2_table(82) := '                , tl   varchar2(4000) path ''$.tl'''||wwv_flow.LF||
-'                  )'||wwv_flow.LF||
-'        ) t'||wwv_flow.LF||
-')'||wwv_flow.LF||
-'select p.id'||wwv_flow.LF||
-'    ';
-wwv_flow_imp.g_varchar2_table(83) := ' , p.name_jtl'||wwv_flow.LF||
-'     , p.description_jtl'||wwv_flow.LF||
-'     , n_tl.lang'||wwv_flow.LF||
-'     , n_tl.tl   name'||wwv_flow.LF||
-'     , d_tl.tl   descr';
-wwv_flow_imp.g_varchar2_table(84) := 'iption'||wwv_flow.LF||
-'     , p.alias'||wwv_flow.LF||
-'     , p.active_ind'||wwv_flow.LF||
-'     , p.created_by'||wwv_flow.LF||
-'     , p.created_on'||wwv_flow.LF||
-'     , p.updated_b';
-wwv_flow_imp.g_varchar2_table(85) := 'y'||wwv_flow.LF||
-'     , p.updated_on'||wwv_flow.LF||
-'  from px_jtl_with_clob p'||wwv_flow.LF||
-'     , n_tl'||wwv_flow.LF||
-'     , d_tl'||wwv_flow.LF||
-' where p.id = n_tl.id'||wwv_flow.LF||
-'   and';
-wwv_flow_imp.g_varchar2_table(86) := ' p.id = d_tl.id'||wwv_flow.LF||
-'   and n_tl.lang = d_tl.lang'||wwv_flow.LF||
-'   and n_tl.lang = (select nvl(apex_util.get_session_la';
-wwv_flow_imp.g_varchar2_table(87) := 'ng,''en'') from dual)'||wwv_flow.LF||
-'/'||wwv_flow.LF||
-'';
+wwv_flow_imp.g_varchar2_table(1) := 'create table px_projects ('||wwv_flow.LF||'    id            number        generated by default on null as identity (start with 1) primary key not null'||wwv_flow.LF||'  , name_jtl      json          not null'||wwv_flow.LF||'  , alias         varch';
+wwv_flow_imp.g_varchar2_table(2) := 'ar2(32)'||wwv_flow.LF||'  , active_ind    varchar2(1)   not null'||wwv_flow.LF||'  , created_by    varchar2(60) default'||wwv_flow.LF||'                    coalesce('||wwv_flow.LF||'                        sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||'                   ';
+wwv_flow_imp.g_varchar2_table(3) := '   , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                      , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'                    )'||wwv_flow.LF||'                    not null'||wwv_flow.LF||'  , created_on ';
+wwv_flow_imp.g_varchar2_table(4) := '   date         default sysdate not null'||wwv_flow.LF||'  , updated_by    varchar2(60)'||wwv_flow.LF||'  , updated_on    date'||wwv_flow.LF||'  , constraint px_projects_ck_active'||wwv_flow.LF||'      check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||')'||wwv_flow.LF||'enable primary key using in';
+wwv_flow_imp.g_varchar2_table(5) := 'dex'||wwv_flow.LF||'/'||wwv_flow.LF||'comment on column px_projects.name_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||'create or replace trigger px_projects_u'||wwv_flow.LF||'before update'||wwv_flow.LF||'on px_proj';
+wwv_flow_imp.g_varchar2_table(6) := 'ects'||wwv_flow.LF||'referencing old as old new as new'||wwv_flow.LF||'for each row'||wwv_flow.LF||'begin'||wwv_flow.LF||'  :new.updated_on := sysdate;'||wwv_flow.LF||'  :new.updated_by := coalesce('||wwv_flow.LF||'                         sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||'                 ';
+wwv_flow_imp.g_varchar2_table(7) := '      , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                       , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'                     );'||wwv_flow.LF||'end;'||wwv_flow.LF||'/'||wwv_flow.LF||'insert into PX_PROJECTS (NAME_J';
+wwv_flow_imp.g_varchar2_table(8) := unistr('TL,ALIAS,ACTIVE_IND) values (''[{"l":"en","tl":"Gardening"},{"l":"fr","tl":"Gardening - Fran\00E7ais"},{"l":"es","tl":"Sembrar"}]'',''Garden'',''Y'');')||wwv_flow.LF||'insert into PX_PROJECTS (NAME_JTL,ALIAS,ACTIVE_IND) values ';
+wwv_flow_imp.g_varchar2_table(9) := unistr('(''[{"l":"en","tl":"Painting"},{"l":"fr","tl":"Painting - Fran\00E7ais"},{"l":"es","tl":"Pintar"}]'',''Paint 2'',''Y'');')||wwv_flow.LF||''||wwv_flow.LF||'create or replace view px_projects_vl'||wwv_flow.LF||'as'||wwv_flow.LF||'select t.id'||wwv_flow.LF||'     , t.name_jtl'||wwv_flow.LF||'     , jd.lang'||wwv_flow.LF||'  ';
+wwv_flow_imp.g_varchar2_table(10) := '   , jd.tl name'||wwv_flow.LF||'     , t.alias'||wwv_flow.LF||'     , t.active_ind'||wwv_flow.LF||'     , t.created_by'||wwv_flow.LF||'     , t.created_on'||wwv_flow.LF||'     , t.updated_by'||wwv_flow.LF||'     , t.updated_on'||wwv_flow.LF||'  from px_projects t'||wwv_flow.LF||'     , json_table(t.name_jtl, ''$[*]'''||wwv_flow.LF||'        col';
+wwv_flow_imp.g_varchar2_table(11) := 'umns ('||wwv_flow.LF||'             lang varchar2(10)      path ''$.l'''||wwv_flow.LF||'           , tl   varchar2(60 char) path ''$.tl'''||wwv_flow.LF||'       )) jd'||wwv_flow.LF||' where jd.lang = (select nvl(apex_util.get_session_lang,''en'') from dual)'||wwv_flow.LF||'/'||wwv_flow.LF||''||wwv_flow.LF||'create ta';
+wwv_flow_imp.g_varchar2_table(12) := 'ble px_projects2 ('||wwv_flow.LF||'    id            number        generated by default on null as identity (start with 1) primary key not null'||wwv_flow.LF||'  , name_jtl      json          not null'||wwv_flow.LF||'  , description_jtl json       ';
+wwv_flow_imp.g_varchar2_table(13) := ' not null'||wwv_flow.LF||'  , alias         varchar2(32)'||wwv_flow.LF||'  , active_ind    varchar2(1)   not null'||wwv_flow.LF||'  , created_by    varchar2(60) default'||wwv_flow.LF||'                    coalesce('||wwv_flow.LF||'                        sys_context(''APEX$SESSION';
+wwv_flow_imp.g_varchar2_table(14) := ''',''app_user'')'||wwv_flow.LF||'                      , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                      , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'                    )'||wwv_flow.LF||'           ';
+wwv_flow_imp.g_varchar2_table(15) := '         not null'||wwv_flow.LF||'  , created_on    date         default sysdate not null'||wwv_flow.LF||'  , updated_by    varchar2(60)'||wwv_flow.LF||'  , updated_on    date'||wwv_flow.LF||'  , constraint px_projects2_ck_active check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||')';
+wwv_flow_imp.g_varchar2_table(16) := ''||wwv_flow.LF||'enable primary key using index'||wwv_flow.LF||'/'||wwv_flow.LF||'comment on column px_projects2.name_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||'comment on column px_projects2.desc';
+wwv_flow_imp.g_varchar2_table(17) := 'ription_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||'create or replace trigger px_projects2_u'||wwv_flow.LF||'before update'||wwv_flow.LF||'on px_projects2'||wwv_flow.LF||'referencing old as old new';
+wwv_flow_imp.g_varchar2_table(18) := ' as new'||wwv_flow.LF||'for each row'||wwv_flow.LF||'begin'||wwv_flow.LF||'  :new.updated_on := sysdate;'||wwv_flow.LF||'  :new.updated_by := coalesce('||wwv_flow.LF||'                         sys_context(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||'                       , regexp_substr(sys_conte';
+wwv_flow_imp.g_varchar2_table(19) := 'xt(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                       , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'                     );'||wwv_flow.LF||'end;'||wwv_flow.LF||'/'||wwv_flow.LF||'insert into PX_PROJECTS2 (NAME_JTL,DESCRIPTION_JTL,ALIAS,ACTIV';
+wwv_flow_imp.g_varchar2_table(20) := unistr('E_IND) values (''[{"l":"en","tl":"Name 1 - English"},{"l":"fr","tl":"Nom 1 - Fran\00E7ais"},{"l":"es","tl":"Nombre 1 - Espa\00F1ol"}]'',''[{"l":"en","tl":"Desc 1 - English"},{"l":"fr","tl":"Desc 1 - Fran\00E7ais"},{');
+wwv_flow_imp.g_varchar2_table(21) := unistr('"l":"es","tl":"Desc 1 - Espa\00F1ol"}]'',''Nom 1'',''Y'');')||wwv_flow.LF||unistr('insert into PX_PROJECTS2 (NAME_JTL,DESCRIPTION_JTL,ALIAS,ACTIVE_IND) values (''[{"l":"en","tl":"Nom 2- English"},{"l":"fr","tl":"Nom 2 - Fran\00E7ais"},{"l');
+wwv_flow_imp.g_varchar2_table(22) := unistr('":"es","tl":"Nom 2 - Espa\00F1ol"}]'',''[{"l":"en","tl":"Desc 2 - English"},{"l":"fr","tl":"Desc 2 - Fran\00E7ais"},{"l":"es","tl":"Desc 2 - Espa\00F1ol"}]'',''Nom 2'',''Y'');')||wwv_flow.LF||''||wwv_flow.LF||'create or replace view px_projects2_vl'||wwv_flow.LF||'as'||wwv_flow.LF||'';
+wwv_flow_imp.g_varchar2_table(23) := 'with n_tl as ('||wwv_flow.LF||'  select /*+ no_merge */ p.id'||wwv_flow.LF||'       , t.lang'||wwv_flow.LF||'       , t.tl'||wwv_flow.LF||'    from px_projects2 p'||wwv_flow.LF||'       , json_table(p.name_jtl, ''$[*]'''||wwv_flow.LF||'          columns ('||wwv_flow.LF||'                   lang varchar2(10) path ';
+wwv_flow_imp.g_varchar2_table(24) := '''$.l'''||wwv_flow.LF||'                 , tl   varchar2(50 char) path ''$.tl'''||wwv_flow.LF||'                  )'||wwv_flow.LF||'        ) t'||wwv_flow.LF||'),'||wwv_flow.LF||'d_tl as ('||wwv_flow.LF||'  select /*+ no_merge */ p.id'||wwv_flow.LF||'       , t.lang'||wwv_flow.LF||'       , t.tl'||wwv_flow.LF||'    from px_projects2 p'||wwv_flow.LF||'       , js';
+wwv_flow_imp.g_varchar2_table(25) := 'on_table(p.description_jtl, ''$[*]'''||wwv_flow.LF||'          columns ('||wwv_flow.LF||'                   lang varchar2(10) path ''$.l'''||wwv_flow.LF||'                 , tl   varchar2(1000 char) path ''$.tl'''||wwv_flow.LF||'                  )'||wwv_flow.LF||'        ) t'||wwv_flow.LF||')'||wwv_flow.LF||'select ';
+wwv_flow_imp.g_varchar2_table(26) := 'p.id'||wwv_flow.LF||'     , p.name_jtl'||wwv_flow.LF||'     , p.description_jtl'||wwv_flow.LF||'     , n_tl.lang'||wwv_flow.LF||'     , n_tl.tl   name'||wwv_flow.LF||'     , d_tl.tl   description'||wwv_flow.LF||'     , p.alias'||wwv_flow.LF||'     , p.active_ind'||wwv_flow.LF||'     , p.created_by'||wwv_flow.LF||'     , p.created_on'||wwv_flow.LF||'     , p.';
+wwv_flow_imp.g_varchar2_table(27) := 'updated_by'||wwv_flow.LF||'     , p.updated_on'||wwv_flow.LF||'  from px_projects2 p'||wwv_flow.LF||'     , n_tl'||wwv_flow.LF||'     , d_tl'||wwv_flow.LF||' where p.id = n_tl.id'||wwv_flow.LF||'   and p.id = d_tl.id'||wwv_flow.LF||'   and n_tl.lang = d_tl.lang'||wwv_flow.LF||'   and n_tl.lang = (select nvl(apex_util.get_sessi';
+wwv_flow_imp.g_varchar2_table(28) := 'on_lang,''en'') from dual)'||wwv_flow.LF||'/'||wwv_flow.LF||''||wwv_flow.LF||'create table px_jtl_with_clob ('||wwv_flow.LF||'    id            number        generated by default on null as identity (start with 1) primary key not null'||wwv_flow.LF||'  , name_jtl      varchar2(500)';
+wwv_flow_imp.g_varchar2_table(29) := '   not null constraint px_jtl_with_clob_name_tl_ck CHECK (name_jtl is json(strict))'||wwv_flow.LF||'  , description_jtl clob not null constraint px_jtl_with_clob_desc_tl_ck CHECK (description_jtl is json(strict))'||wwv_flow.LF||'  ,';
+wwv_flow_imp.g_varchar2_table(30) := ' alias         varchar2(32)'||wwv_flow.LF||'  , active_ind    varchar2(1)   not null'||wwv_flow.LF||'  , created_by    varchar2(60) default'||wwv_flow.LF||'                    coalesce('||wwv_flow.LF||'                        sys_context(''APEX$SESSION'',''app_user'')';
+wwv_flow_imp.g_varchar2_table(31) := ''||wwv_flow.LF||'                      , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                      , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'                    )'||wwv_flow.LF||'                    not ';
+wwv_flow_imp.g_varchar2_table(32) := 'null'||wwv_flow.LF||'  , created_on    date         default sysdate not null'||wwv_flow.LF||'  , updated_by    varchar2(60)'||wwv_flow.LF||'  , updated_on    date'||wwv_flow.LF||'  , constraint px_jtl_with_clob_ck_active'||wwv_flow.LF||'      check (active_ind in (''Y'', ''N''))'||wwv_flow.LF||')'||wwv_flow.LF||'en';
+wwv_flow_imp.g_varchar2_table(33) := 'able primary key using index'||wwv_flow.LF||'/'||wwv_flow.LF||'comment on table px_jtl_with_clob is ''Demo table to test clobs'';'||wwv_flow.LF||'comment on column px_jtl_with_clob.name_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us"';
+wwv_flow_imp.g_varchar2_table(34) := ', "tl": "Project Analysis"}]'';'||wwv_flow.LF||'comment on column px_jtl_with_clob.description_jtl is ''JSON data with the language as keys. Syntax: [{"l": "us", "tl": "Project Analysis"}]'';'||wwv_flow.LF||'create or replace trigger p';
+wwv_flow_imp.g_varchar2_table(35) := 'x_jtl_with_clob_u'||wwv_flow.LF||'before update'||wwv_flow.LF||'on px_jtl_with_clob'||wwv_flow.LF||'referencing old as old new as new'||wwv_flow.LF||'for each row'||wwv_flow.LF||'begin'||wwv_flow.LF||'  :new.updated_on := sysdate;'||wwv_flow.LF||'  :new.updated_by := coalesce('||wwv_flow.LF||'                         sys_conte';
+wwv_flow_imp.g_varchar2_table(36) := 'xt(''APEX$SESSION'',''app_user'')'||wwv_flow.LF||'                       , regexp_substr(sys_context(''userenv'',''client_identifier''),''^[^:]*'')'||wwv_flow.LF||'                       , sys_context(''userenv'',''session_user'')'||wwv_flow.LF||'               ';
+wwv_flow_imp.g_varchar2_table(37) := '      );'||wwv_flow.LF||'end;'||wwv_flow.LF||'/'||wwv_flow.LF||'create or replace view px_jtl_with_clob_vl'||wwv_flow.LF||'as'||wwv_flow.LF||'with n_tl as ('||wwv_flow.LF||'  select /*+ no_merge */ p.id'||wwv_flow.LF||'       , t.lang'||wwv_flow.LF||'       , t.tl'||wwv_flow.LF||'    from px_jtl_with_clob p'||wwv_flow.LF||'       , json_table(p.name_jtl, ''$[';
+wwv_flow_imp.g_varchar2_table(38) := '*]'''||wwv_flow.LF||'          columns ('||wwv_flow.LF||'                   lang varchar2(10) path ''$.l'''||wwv_flow.LF||'                 , tl   varchar2(50 char) path ''$.tl'''||wwv_flow.LF||'                  )'||wwv_flow.LF||'        ) t'||wwv_flow.LF||'),'||wwv_flow.LF||'d_tl as ('||wwv_flow.LF||'  select /*+ no_merge */ p.id';
+wwv_flow_imp.g_varchar2_table(39) := ''||wwv_flow.LF||'       , t.lang'||wwv_flow.LF||'       , t.tl'||wwv_flow.LF||'    from px_jtl_with_clob p'||wwv_flow.LF||'       , json_table(p.description_jtl, ''$[*]'''||wwv_flow.LF||'          columns ('||wwv_flow.LF||'                   lang varchar2(10) path ''$.l'''||wwv_flow.LF||'                 , tl   var';
+wwv_flow_imp.g_varchar2_table(40) := 'char2(4000) path ''$.tl'''||wwv_flow.LF||'                  )'||wwv_flow.LF||'        ) t'||wwv_flow.LF||')'||wwv_flow.LF||'select p.id'||wwv_flow.LF||'     , p.name_jtl'||wwv_flow.LF||'     , p.description_jtl'||wwv_flow.LF||'     , n_tl.lang'||wwv_flow.LF||'     , n_tl.tl   name'||wwv_flow.LF||'     , d_tl.tl   description'||wwv_flow.LF||'     , p.alias'||wwv_flow.LF||'    ';
+wwv_flow_imp.g_varchar2_table(41) := ' , p.active_ind'||wwv_flow.LF||'     , p.created_by'||wwv_flow.LF||'     , p.created_on'||wwv_flow.LF||'     , p.updated_by'||wwv_flow.LF||'     , p.updated_on'||wwv_flow.LF||'  from px_jtl_with_clob p'||wwv_flow.LF||'     , n_tl'||wwv_flow.LF||'     , d_tl'||wwv_flow.LF||' where p.id = n_tl.id'||wwv_flow.LF||'   and p.id = d_tl.id'||wwv_flow.LF||'   and n_t';
+wwv_flow_imp.g_varchar2_table(42) := 'l.lang = d_tl.lang'||wwv_flow.LF||'   and n_tl.lang = (select nvl(apex_util.get_session_lang,''en'') from dual)'||wwv_flow.LF||'/'||wwv_flow.LF||''||wwv_flow.LF||'create table px_projects_json ('||wwv_flow.LF||'    id            number generated by default on null as identity prima';
+wwv_flow_imp.g_varchar2_table(43) := 'ry key not null'||wwv_flow.LF||'  , name_jtl      json'||wwv_flow.LF||'  , alias         varchar2(32)'||wwv_flow.LF||'  , active_ind    varchar2(1) default ''Y'' not null'||wwv_flow.LF||'  , constraint px_projects_json_ck_active check (active_ind in (''Y'',''N''))'||wwv_flow.LF||')'||wwv_flow.LF||'/'||wwv_flow.LF||'c';
+wwv_flow_imp.g_varchar2_table(44) := 'reate or replace view px_projects_json_vl'||wwv_flow.LF||'as'||wwv_flow.LF||'select t.id'||wwv_flow.LF||'     , t.name_jtl'||wwv_flow.LF||'     , jd.lang'||wwv_flow.LF||'     , jd.tl name'||wwv_flow.LF||'     , t.alias'||wwv_flow.LF||'     , t.active_ind'||wwv_flow.LF||'  from px_projects_json t'||wwv_flow.LF||'     , json_table(t.name_jtl, ''';
+wwv_flow_imp.g_varchar2_table(45) := '$[*]'''||wwv_flow.LF||'        columns ('||wwv_flow.LF||'             lang varchar2(10)      path ''$.l'''||wwv_flow.LF||'           , tl   varchar2(60 char) path ''$.tl'''||wwv_flow.LF||'       )) jd'||wwv_flow.LF||' where jd.lang = (select nvl(apex_util.get_session_lang,''en'') from d';
+wwv_flow_imp.g_varchar2_table(46) := 'ual)'||wwv_flow.LF||'/'||wwv_flow.LF||'insert into px_projects_json (name_jtl, alias, active_ind) values (''[{"l":"en","tl":"JSON Form Seed"},{"l":"fr","tl":"Forme JSON"},{"l":"es","tl":"Formulario JSON"}]'',''json1'',''Y'');'||wwv_flow.LF||'';
 wwv_flow_imp_shared.create_install_script(
  p_id=>wwv_flow_imp.id(479978174256050489)
 ,p_install_id=>wwv_flow_imp.id(479968059421043544)

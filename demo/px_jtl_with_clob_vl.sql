@@ -5,10 +5,11 @@ with n_tl as (
        , t.lang
        , t.tl
     from px_jtl_with_clob p
-       , xmltable('/json/row' passing apex_json.to_xmltype(p.name_jtl)
-          columns
-               lang  varchar2(10 char) path 'l'
-             , tl    varchar2(50 char) path 'tl'
+       , json_table(p.name_jtl, '$[*]'
+          columns (
+                   lang varchar2(10) path '$.l'
+                 , tl   varchar2(50 char) path '$.tl'
+                  )
         ) t
 ),
 d_tl as (

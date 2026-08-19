@@ -129,7 +129,7 @@ Benefits: validity is inherent to the type (no check constraint needed), binary 
 | `JSON_TABLE` views (`_VL`) | Work unchanged |
 | Classic v5-era processes (Automatic Row Fetch / Automatic Row Processing (DML)) | **Fetch silently returns NULL** — writes work, but the item renders empty over a populated row, and saving that form would wipe existing translations |
 
-If a page still uses the classic processes (as this repo's original demo app does), either convert it to a Form Region or keep the column `VARCHAR2`/`CLOB`. Also note the legacy `apex_json.to_xmltype`/`xmltable` extraction (the 11g section below) does not compile against JSON-typed columns (`PLS-306`) — use `JSON_TABLE`.
+If a page still uses the classic processes (as `demo/f107.sql` does, and as pages 2–3 of `demo/f9107.sql` still do), either convert it to a Form Region or keep the column `VARCHAR2`/`CLOB`. The 26.1 demo supporting objects create `PX_PROJECTS` and `PX_PROJECTS2` as native `JSON` so the classic-fetch limitation is visible on those pages; page 7 is the working Form Region path. Also note the legacy `apex_json.to_xmltype`/`xmltable` extraction (the 11g section below) does not compile against JSON-typed columns (`PLS-306`) — use `JSON_TABLE`.
 
 ## Why JSON?
 If you ever had to create a multi-language app, you know that a typical approach is to store the translated values on a translation table. Therefore, every translated entity (table) will require a child table with translations. This design pattern is cumbersome to work with and comes with significan application overhead.
@@ -175,7 +175,8 @@ You'll also miss out of the JSON constraint on the column, but this is not a con
 ## Change Log
 ### v2.0.0, August 18, 2026
 * Re-exported from APEX 26.1 (current `wwv_flow_imp` export format). Older APEX versions should continue using v1.4.0.
-* Refreshed demo app: [demo/f9107.sql](demo/f9107.sql) — APEX 26.1 export with Universal Theme refreshed, compatibility mode 26.1, legacy JavaScript/jQuery Migrate includes removed, and a new Form Region page demonstrating the modern processes against a native JSON column. The original [demo/f107.sql](demo/f107.sql) remains for older APEX versions.
+* Refreshed demo app: [demo/f9107.sql](demo/f9107.sql) — APEX 26.1 export with Universal Theme refreshed, compatibility mode 26.1, legacy JavaScript/jQuery Migrate includes removed, and a new Form Region page (7) demonstrating the modern processes against JSON-typed `PX_PROJECTS2` columns. Supporting objects now create those columns as native `JSON` and install `px_projects2_vl` with `JSON_TABLE` (the copy that ships with the app). The original [demo/f107.sql](demo/f107.sql) remains for older APEX versions.
+* Plugin `p_version_identifier` is 2.0.0 (APEX 26.1 minimum).
 * Verified end-to-end on APEX 26.1 / Oracle 23ai — form pages, translation dialog, per-language validation, and Interactive Grid all work with no plugin code changes.
 * Native `JSON` datatype columns documented with a verified support matrix (see [Native JSON Columns](#native-json-columns-oracle-21c23ai)) and a new example, [demo/px_projects_json.sql](demo/px_projects_json.sql).
 * Fixed [demo/px_projects2_vl.sql](demo/px_projects2_vl.sql): replaced the legacy `apex_json.to_xmltype`/`xmltable` extraction with `JSON_TABLE` — the old technique fails to compile (`PLS-306`) against JSON-typed columns.

@@ -493,7 +493,7 @@ wwv_flow_imp_shared.create_plugin(
 '',
 'For better plugin render performance switch from the inline code to the package code.  Change the render, metadata, and validate procedures to tk_jtl_plugin.render, tk_jtl_plugin.metadata and tk_jtl_plugin.validate. Then REMOVE the inline code or you'
 ||' will not get the performance improvement.'))
-,p_version_identifier=>'1.4.0'
+,p_version_identifier=>'2.0.0'
 ,p_about_url=>'https://github.com/rimblas/jtlitem'
 ,p_files_version=>2461271101422
 );

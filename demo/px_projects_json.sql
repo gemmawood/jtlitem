@@ -27,3 +27,10 @@ select t.id
        )) jd
  where jd.lang = (select nvl(apex_util.get_session_lang,'en') from dual)
 /
+
+insert into px_projects_json (name_jtl, alias, active_ind) values (
+  '[{"l":"en","tl":"JSON Form Seed"},{"l":"fr","tl":"Forme JSON"},{"l":"es","tl":"Formulario JSON"}]'
+, 'json1'
+, 'Y'
+);
+
