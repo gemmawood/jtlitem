@@ -1,0 +1,8 @@
+buildOption dev-only (
+    name: DEV_ONLY
+    status {
+        status: include
+        defaultOnExport: include
+    }
+)
+

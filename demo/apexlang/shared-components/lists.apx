@@ -1,0 +1,204 @@
+list desktop-navigation-bar (
+    name: Desktop Navigation Bar
+
+    entry english (
+        label: English
+        layout {
+            sequence: 30
+            parentEntry: @languages-g-lang
+        }
+        link {
+            target: {
+                page: 500
+                items: {
+                    P500_LAST_PAGE: &APP_PAGE_ID.
+                    G_LANG: en
+                }
+                request: BRANCH_TO_PAGE_ACCEPT
+            }
+        }
+        serverSideCondition {
+            type: item!=value
+            item: G_LANG
+            value: en
+        }
+    )
+
+    entry español (
+        label: Español
+        layout {
+            sequence: 50
+            parentEntry: @languages-g-lang
+        }
+        link {
+            target: {
+                page: 500
+                items: {
+                    P500_LAST_PAGE: &APP_PAGE_ID.
+                    G_LANG: es
+                }
+                request: BRANCH_TO_PAGE_ACCEPT
+            }
+        }
+        serverSideCondition {
+            type: item!=value
+            item: G_LANG
+            value: es
+        }
+    )
+
+    entry français (
+        label: Français
+        layout {
+            sequence: 40
+            parentEntry: @languages-g-lang
+        }
+        link {
+            target: {
+                page: 500
+                items: {
+                    P500_LAST_PAGE: &APP_PAGE_ID.
+                    G_LANG: fr
+                }
+                request: BRANCH_TO_PAGE_ACCEPT
+            }
+        }
+        serverSideCondition {
+            type: item!=value
+            item: G_LANG
+            value: fr
+        }
+    )
+
+    entry languages-g-lang (
+        label: Languages (&G_LANG.)
+        icon {
+            imageIconCssClasses: fa-globe
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: {
+                page: 1
+            }
+        }
+    )
+
+    entry log-out (
+        label: Log Out
+        layout {
+            sequence: 99
+        }
+        link {
+            target: {
+                type: url
+                url: &LOGOUT_URL.
+            }
+        }
+    )
+
+)
+
+list desktop-navigation-menu (
+    name: Desktop Navigation Menu
+
+    entry form-region-json (
+        label: Form Region (JSON)
+        layout {
+            sequence: 50
+            parentEntry: @home
+        }
+        isCurrent {
+            type: pages
+            pages: 7
+        }
+        link {
+            target: {
+                page: 7
+            }
+        }
+    )
+
+    entry home (
+        label: Home
+        icon {
+            imageIconCssClasses: fa-home
+        }
+        layout {
+            sequence: 10
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                1
+                4
+                6
+            ]
+        }
+        link {
+            target: {
+                page: 1
+            }
+        }
+    )
+
+    entry jtl-with-clob (
+        label: JTL with CLOB
+        layout {
+            sequence: 30
+            parentEntry: @home
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                4
+                5
+            ]
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+    entry jtl-with-ig-new (
+        label: "JTL with IG [New!]"
+        layout {
+            sequence: 40
+            parentEntry: @home
+        }
+        isCurrent {
+            type: pages
+            pages: 6
+        }
+        link {
+            target: {
+                page: 6
+            }
+        }
+    )
+
+    entry projects (
+        label: Projects
+        layout {
+            sequence: 20
+            parentEntry: @home
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                2
+                3
+            ]
+        }
+        link {
+            target: {
+                page: 2
+            }
+        }
+    )
+
+)
+

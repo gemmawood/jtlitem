@@ -1,0 +1,177 @@
+page 1 (
+    name: Home
+    title: Home
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    css {
+        inline: .fork-me {position: absolute; top:0; right:0}
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+    help {
+        helpText: No help is available for this page.
+    }
+
+    region about-the-jtl-item-plugin (
+        name: About the JTL Item Plugin
+        type: staticContent
+        source {
+            htmlCode:
+                ```html
+                This demo uses tables with columns that store translations in JSON format.<br>
+                <br>
+                These JSON columns use a plugin that handles the JSON structure automatically. The user only sees the language selected.<br>
+                
+                Use the <span class="t-Icon fa fa-globe"></span> button next to the item to edit all languages. The button is configurable so that only users that need to edit all languages have access to it.<br>
+                
+                <br>
+                <hr>
+                The JSON format structure for a translation column is of this form:<br>
+                <pre>
+                [ {"l": "us", "tl": "Project Analysis"}
+                , {"l": "fr", "tl": "Analyse de projet"}
+                , {"l": "es", "tl": "Analisis de projecto"}]
+                </pre>
+                
+                Where `l` is the language code and `tl` is the translation.<br>
+                <br>
+                <br>
+                <b>Repo:</b> <a href="https://github.com/rimblas/jtlitem" target="_blank">github.com/rimblas/jtlitem</a><br>
+                
+                
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        advanced {
+            regionDisplaySelector: true
+        }
+    )
+
+    region apex-page-item-is-required (
+        name: APEX.PAGE_ITEM_IS_REQUIRED
+        type: plSqlDynamicContent
+        source {
+            plsqlCode:
+                ```plsql
+                htp.p('wwv_flow_lang.system_message:' || wwv_flow_lang.system_message('APEX.PAGE_ITEM_IS_REQUIRED'));
+                htp.br;
+                htp.p('apex_lang.message:' || apex_lang.message('APEX.PAGE_ITEM_IS_REQUIRED'));
+                
+                
+                ```
+        }
+        layout {
+            sequence: 30
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        advanced {
+            regionDisplaySelector: true
+        }
+        headerAndFooter {
+            headerText:
+                ```html
+                This is the message that the plugin will use when a value is required.<br>
+                <br>
+                ```
+        }
+    )
+
+    region breadcrumbs (
+        name: Breadcrumbs
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        serverSideCondition {
+            type: never
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region environment (
+        name: Environment
+        type: plSqlDynamicContent
+        source {
+            plsqlCode:
+                ```plsql
+                
+                htp.p('<p>' || 'BROWSER_LANGUAGE:' || :BROWSER_LANGUAGE || '</p>');
+                htp.p('<p>' || 'apex_util.get_session_lang:' || apex_util.get_session_lang || '</p>');
+                
+                ```
+        }
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        advanced {
+            regionDisplaySelector: true
+        }
+    )
+
+    region fork-me (
+        name: Fork Me
+        type: staticContent
+        source {
+            htmlCode: <a href="https://github.com/rimblas/jtlitem"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="fork-me attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+        }
+        layout {
+            sequence: 20
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        advanced {
+            regionDisplaySelector: true
+        }
+    )
+
+)
+

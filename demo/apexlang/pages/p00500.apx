@@ -1,0 +1,92 @@
+page 500 (
+    name: Switch Language
+    title: Switch Language
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+    help {
+        helpText: No help is available for this page.
+    }
+
+    region items (
+        name: Items
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        advanced {
+            regionDisplaySelector: true
+        }
+    )
+
+    pageItem P500_LAST_PAGE (
+        type: textField
+        label {
+            label: Last page
+            alignment: left
+        }
+        layout {
+            sequence: 10
+            region: @items
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+        security {
+            encryptSessionState: false
+        }
+    )
+
+    process switch-language (
+        name: Switch Language
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                apex_util.set_session_lang(:G_LANG);
+                
+                ```
+        }
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 477579363477009723
+        }
+    )
+
+    branch (
+        name: Return to page
+        execution {
+            sequence: 10
+        }
+        behavior {
+            target: {
+                page: &P500_LAST_PAGE.
+                action: resetPagination
+            }
+        }
+    )
+
+)
+

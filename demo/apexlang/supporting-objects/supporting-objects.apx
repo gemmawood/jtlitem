@@ -1,0 +1,21 @@
+supportingObject (
+    prerequisites {
+        freeSpace: 100
+        systemPrivileges: [
+            createProcedure
+            createTable
+            createTrigger
+            createView
+        ]
+    }
+    upgrade {
+        upgradeWhenSqlQuery: SELECT OBJECT_NAME FROM SYS.USER_OBJECTS WHERE OBJECT_NAME = 'PX_PROJECTS2'
+    }
+    deinstall {
+        scriptFile: deinstall-script.sql
+    }
+    advanced {
+        includeInAppExport: true
+    }
+)
+

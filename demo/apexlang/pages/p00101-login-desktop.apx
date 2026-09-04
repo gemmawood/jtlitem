@@ -1,0 +1,231 @@
+page 101 (
+    name: Login Page
+    alias: LOGIN_DESKTOP
+    title: Translation Demo - Log In
+    appearance {
+        pageTemplate: @/login
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        warnOnUnsavedChanges: false
+    }
+    javaScript {
+        executeWhenPageLoads:
+            ```javascript-browser
+            $(".a-LinksList-item").addClass("t-Button").addClass("t-Button--pill");
+            
+            ```
+    }
+    css {
+        inline:
+            ```css
+            .a-LinksList--lang {text-align: center;}
+            a.a-LinksList-link {position: relative; z-index: 2;}
+            .t-Login-logo.fa.appIcon {
+            font-size: 50px;
+            }
+            .appIcon {
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            -moz-box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            }
+            
+            ```
+    }
+    security {
+        authentication: public
+        formAutoComplete: false
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+
+    region jtl-item-plugin-demo (
+        name: JTL Item Plugin Demo
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        appearance {
+            template: @/login
+            templateOptions: #DEFAULT#
+            icon: appIcon fa-globe
+        }
+        headerAndFooter {
+            footerText: Credentials: <b>demo/demo</b>
+        }
+        settings {
+            outputAs: text
+        }
+    )
+
+    region language-list (
+        name: Language List
+        type: plSqlDynamicContent
+        source {
+            plsqlCode: apex_lang.emit_language_selector_list;
+        }
+        layout {
+            sequence: 10
+            parentRegion: @jtl-item-plugin-demo
+            slot: subRegions
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--removeHeader js-removeLandmark
+                t-Region--scrollBody
+            ]
+        }
+        serverSideCondition {
+            type: never
+        }
+    )
+
+    pageItem P101_PASSWORD (
+        type: password
+        label {
+            label: Password
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @jtl-item-plugin-demo
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            cssClasses: icon-login-password
+            width: 40
+            valuePlaceholder: Password
+        }
+        validation {
+            valueRequired: true
+            maxLength: 100
+        }
+        security {
+            encryptSessionState: false
+        }
+    )
+
+    pageItem P101_USERNAME (
+        type: textField
+        label {
+            label: Username
+            alignment: left
+        }
+        settings {
+            trimSpaces: none
+        }
+        layout {
+            sequence: 10
+            region: @jtl-item-plugin-demo
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            cssClasses: icon-login-username
+            width: 40
+            valuePlaceholder: Username
+        }
+        validation {
+            valueRequired: true
+            maxLength: 100
+        }
+        security {
+            encryptSessionState: false
+        }
+    )
+
+    button login (
+        buttonName: LOGIN
+        label: Log In
+        layout {
+            sequence: 10
+            region: @jtl-item-plugin-demo
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    process clear-page-s-cache (
+        name: Clear Page(s) Cache
+        type: clearSessionState
+        execution {
+            sequence: 30
+        }
+        advanced {
+            executionMappingIdentifier: 477554407209002038
+        }
+    )
+
+    process get-username-cookie (
+        name: Get Username Cookie
+        type: executeCode
+        source {
+            plsqlCode: :P101_USERNAME := apex_authentication.get_login_username_cookie;
+        }
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 477554328081002038
+        }
+    )
+
+    process login (
+        name: Login
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                apex_authentication.login(
+                    p_username => :P101_USERNAME,
+                    p_password => :P101_PASSWORD );
+                ```
+        }
+        execution {
+            sequence: 20
+        }
+        advanced {
+            executionMappingIdentifier: 477554108350002035
+        }
+    )
+
+    process set-username-cookie (
+        name: Set Username Cookie
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                apex_authentication.send_login_username_cookie (
+                    p_username => lower(:P101_USERNAME) );
+                ```
+        }
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 477554162393002038
+        }
+    )
+
+)
+

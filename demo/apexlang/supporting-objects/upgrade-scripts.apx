@@ -1,0 +1,9 @@
+upgradeScript "New CLOB table" (
+    execution {
+        sequence: 10
+    }
+    script {
+        contentFile: new-clob-table.sql
+    }
+)
+

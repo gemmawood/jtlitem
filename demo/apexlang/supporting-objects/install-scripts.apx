@@ -1,0 +1,9 @@
+installScript "All Objects" (
+    execution {
+        sequence: 10
+    }
+    script {
+        contentFile: all-objects.sql
+    }
+)
+

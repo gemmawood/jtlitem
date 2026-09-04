@@ -1,0 +1,30 @@
+file "css/jtl_item.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "css/jtl_item.css.map" (
+    mimeType: application/octet-stream
+    charSet: utf-8
+)
+
+file "css/jtl_item.min.css" (
+    mimeType: text/css
+    charSet: utf-8
+)
+
+file "js/jtl_item.js" (
+    mimeType: application/x-javascript
+    charSet: utf-8
+)
+
+file "js/jtl_item.js.map" (
+    mimeType: application/octet-stream
+    charSet: utf-8
+)
+
+file "js/jtl_item.min.js" (
+    mimeType: application/x-javascript
+    charSet: utf-8
+)
+

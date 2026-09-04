@@ -1,0 +1,653 @@
+page 3 (
+    name: Maintain Project
+    title: Maintain Project
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    javaScript {
+        functionAndGlobalVariableDeclaration:
+            ```javascript-browser
+            var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+            
+            
+            ```
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+    help {
+        helpText: Edit project details using a Form Region compatible with 21c/23ai+ native JSON columns.
+    }
+
+    region audit (
+        name: Audit
+        type: staticContent
+        layout {
+            sequence: 10
+            parentRegion: @maintain-project
+            slot: subRegions
+        }
+        appearance {
+            template: @/collapsible
+            templateOptions: [
+                #DEFAULT#
+                is-collapsed
+                t-Region--scrollBody
+            ]
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P3_ID
+        }
+    )
+
+    region breadcrumbs (
+        name: Breadcrumbs
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region maintain-project (
+        name: Maintain Project
+        type: form
+        source {
+            location: localDatabase
+            tableName: PX_PROJECTS2
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        edit {
+            enabled: true
+        }
+    )
+
+    pageItem P3_ACTIVE_IND (
+        type: switch
+        label {
+            label: Active?
+            alignment: left
+        }
+        layout {
+            sequence: 60
+            region: @maintain-project
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            formRegion: @maintain-project
+            column: ACTIVE_IND
+            dataType: varchar2
+        }
+        default {
+            type: static
+            staticValue: Y
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: Indicates if the record is active or inactive.
+        }
+    )
+
+    pageItem P3_ALIAS (
+        type: textField
+        label {
+            label: Alias
+            alignment: left
+        }
+        layout {
+            sequence: 50
+            region: @maintain-project
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            width: 30
+        }
+        validation {
+            maxLength: 32
+        }
+        source {
+            formRegion: @maintain-project
+            column: ALIAS
+            dataType: varchar2
+        }
+        security {
+            encryptSessionState: false
+        }
+    )
+
+    pageItem P3_CREATED_BY (
+        type: displayOnly
+        label {
+            label: Created By
+            alignment: left
+        }
+        layout {
+            sequence: 10
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            formRegion: @maintain-project
+            column: CREATED_BY
+            dataType: varchar2
+            queryOnly: true
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P3_CREATED_ON (
+        type: displayOnly
+        label {
+            label: Created On
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            formatMask: DD-MON-YYYY HH:MIPM
+        }
+        source {
+            formRegion: @maintain-project
+            column: CREATED_ON
+            dataType: date
+            queryOnly: true
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P3_DESCRIPTION_JTL (
+        type: plugin/jtlItem
+        label {
+            label: Description
+            alignment: left
+        }
+        settings {
+            subtype: textarea
+        }
+        layout {
+            sequence: 40
+            region: @maintain-project
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required
+            templateOptions: #DEFAULT#
+            width: 70
+            height: 2
+        }
+        validation {
+            valueRequired: true
+            maxLength: 400
+        }
+        source {
+            formRegion: @maintain-project
+            column: DESCRIPTION_JTL
+            dataType: varchar2
+        }
+        help {
+            helpText:
+                ```html
+                This item is using a multi-language plugin. All translations for a column are stored along with the column in JSON format.<br>
+                The structure is of this form:<br>
+                <pre>
+                [ {"l": "us", "tl": "Project Analysis"}
+                , {"l": "fr", "tl": "Analyse de projet"}
+                , {"l": "es", "tl": "Analisis de projecto"}]
+                </pre>
+                
+                Where `l` is the language code and `tl` is the translation.<br>
+                Use the <span class="t-Icon fa fa-globe"></span> button to edit all languages. The button is configurable so that only users that need to edit all languages have access to it.
+                ```
+        }
+    )
+
+    pageItem P3_ID (
+        type: hidden
+        layout {
+            sequence: 10
+            region: @maintain-project
+            slot: regionBody
+        }
+        source {
+            formRegion: @maintain-project
+            column: ID
+            dataType: number
+            queryOnly: true
+            primaryKey: true
+        }
+        security {
+            sessionStateProtection: checksumRequiredSessionLevel
+            encryptSessionState: false
+        }
+    )
+
+    pageItem P3_NAME_JTL (
+        type: plugin/jtlItem
+        label {
+            label: Name
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @maintain-project
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required
+            templateOptions: #DEFAULT#
+            width: 40
+        }
+        validation {
+            maxLength: 60
+        }
+        advanced {
+            cssClasses: is-active
+            warnOnUnsavedChanges: ignore
+        }
+        source {
+            formRegion: @maintain-project
+            column: NAME_JTL
+            dataType: varchar2
+        }
+        help {
+            helpText:
+                ```html
+                This item is using a multi-language plugin. All translations for a column are stored along with the column in JSON format.<br>
+                The structure is of this form:<br>
+                <pre>
+                [ {"l": "us", "tl": "Project Analysis"}
+                , {"l": "fr", "tl": "Analyse de projet"}
+                , {"l": "es", "tl": "Analisis de projecto"}]
+                </pre>
+                
+                Where `l` is the language code and `tl` is the translation.<br>
+                Use the <span class="t-Icon fa fa-globe"></span> button to edit all languages. The button is configurable so that only users that need to edit all languages have access to it.
+                ```
+        }
+    )
+
+    pageItem P3_UPDATED_BY (
+        type: displayOnly
+        label {
+            label: Updated By
+            alignment: left
+        }
+        layout {
+            sequence: 30
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            formRegion: @maintain-project
+            column: UPDATED_BY
+            dataType: varchar2
+            queryOnly: true
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P3_UPDATED_ON (
+        type: displayOnly
+        label {
+            label: Updated On
+            alignment: left
+        }
+        layout {
+            sequence: 40
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            formatMask: DD-MON-YYYY HH:MIPM
+        }
+        source {
+            formRegion: @maintain-project
+            column: UPDATED_ON
+            dataType: date
+            queryOnly: true
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    button cancel (
+        buttonName: CANCEL
+        label: Cancel
+        layout {
+            sequence: 30
+            region: @maintain-project
+            slot: close
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 2
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 60
+            region: @maintain-project
+            slot: create
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: insert
+        }
+        serverSideCondition {
+            type: itemIsNull
+            item: P3_ID
+        }
+    )
+
+    button delete (
+        buttonName: DELETE
+        label: Delete
+        layout {
+            sequence: 40
+            region: @maintain-project
+            slot: delete
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectUrl
+            targetUrl: javascript:apex.confirm(htmldb_delete_message,'DELETE');
+            executeValidations: false
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: delete
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P3_ID
+        }
+    )
+
+    button disable (
+        buttonName: DISABLE
+        label: Disable Name
+        layout {
+            sequence: 10
+            region: @maintain-project
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+        }
+    )
+
+    button enable (
+        buttonName: ENABLE
+        label: Enable Name
+        layout {
+            sequence: 20
+            region: @maintain-project
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+        }
+    )
+
+    button save (
+        buttonName: SAVE
+        label: Save
+        layout {
+            sequence: 50
+            region: @maintain-project
+            slot: create
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--iconRight
+            ]
+            icon: fa-check
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: update
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P3_ID
+        }
+    )
+
+    dynamicAction disable-button (
+        name: Disable Button
+        execution {
+            sequence: 10
+        }
+        when {
+            event: click
+            selectionType: button
+            button: @disable
+        }
+
+        action native-disable (
+            action: disable
+            affectedElements {
+                selectionType: items
+                items: P3_NAME_JTL
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    dynamicAction enable-name (
+        name: Enable Name
+        execution {
+            sequence: 20
+        }
+        when {
+            event: click
+            selectionType: button
+            button: @enable
+        }
+
+        action native-enable (
+            action: enable
+            affectedElements {
+                selectionType: items
+                items: P3_NAME_JTL
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    dynamicAction record-change (
+        name: Record Change
+        execution {
+            sequence: 30
+        }
+        when {
+            selectionType: items
+            items: P3_NAME_JTL
+        }
+
+        action native-javascript-code (
+            action: executeJsCode
+            settings {
+                jsCode: console.log("Changed!", $v(this.triggeringElement));
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    validation p3-name-jtl-is-not-null (
+        name: P3_NAME_JTL is not null
+        execution {
+            sequence: 10
+        }
+        validation {
+            plsqlExpression: tk_jtl_plugin.get_tl_value(:P3_NAME_JTL) is not null
+        }
+        error {
+            errorMessage: The name is required
+            associatedItem: @P3_NAME_JTL
+        }
+    )
+
+    process initialize-form (
+        name: Initialize Form Region
+        type: formInitialization
+        formRegion: @maintain-project
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 5729118217865565
+        }
+    )
+
+    process process-form (
+        name: Process Form Region
+        type: formAutoRowProcessing
+        formRegion: @maintain-project
+        execution {
+            sequence: 10
+        }
+        successMessage {
+            successMessage: Action Processed.
+        }
+        advanced {
+            executionMappingIdentifier: 5729291416865565
+        }
+    )
+
+    branch (
+        execution {
+            sequence: 1
+        }
+        behavior {
+            target: {
+                page: 2
+            }
+        }
+    )
+
+)
+

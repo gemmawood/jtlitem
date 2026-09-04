@@ -1,0 +1,480 @@
+page 5 (
+    name: Maintain JTL with Clob
+    title: Maintain JTL with Clob
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    javaScript {
+        functionAndGlobalVariableDeclaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+    help {
+        helpText: No help is available for this page.
+    }
+
+    region audit (
+        name: Audit
+        type: staticContent
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/collapsible
+            templateOptions: [
+                #DEFAULT#
+                is-collapsed
+                t-Region--scrollBody
+            ]
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P5_ID
+        }
+    )
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region maintain-jtl-with-clob (
+        name: Maintain JTL with Clob
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        settings {
+            outputAs: text
+        }
+    )
+
+    pageItem P5_ACTIVE_IND (
+        type: switch
+        label {
+            label: Active?
+            alignment: left
+        }
+        layout {
+            sequence: 40
+            region: @maintain-jtl-with-clob
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: ACTIVE_IND
+            used: always
+        }
+        default {
+            type: static
+            staticValue: Y
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: Indicates if the record is active or inactive.
+        }
+    )
+
+    pageItem P5_CREATED_BY (
+        type: displayOnly
+        label {
+            label: Created By
+            alignment: left
+        }
+        layout {
+            sequence: 10
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: CREATED_BY
+            used: always
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P5_CREATED_ON (
+        type: displayOnly
+        label {
+            label: Created On
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            formatMask: DD-MON-YYYY HH:MIPM
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: CREATED_ON
+            used: always
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P5_DESCRIPTION_JTL (
+        type: plugin/jtlItem
+        label {
+            label: Description
+            alignment: left
+        }
+        settings {
+            subtype: textarea
+        }
+        layout {
+            sequence: 30
+            region: @maintain-jtl-with-clob
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required
+            templateOptions: #DEFAULT#
+            width: 60
+            height: 2
+        }
+        validation {
+            valueRequired: true
+            maxLength: 3000
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: DESCRIPTION_JTL
+            used: always
+        }
+    )
+
+    pageItem P5_ID (
+        type: hidden
+        layout {
+            sequence: 10
+            region: @maintain-jtl-with-clob
+            slot: regionBody
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: ID
+            used: always
+        }
+        security {
+            sessionStateProtection: checksumRequiredSessionLevel
+            encryptSessionState: false
+        }
+    )
+
+    pageItem P5_NAME_JTL (
+        type: plugin/jtlItem
+        label {
+            label: Name
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @maintain-jtl-with-clob
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/required
+            templateOptions: #DEFAULT#
+            width: 40
+            height: 1
+        }
+        validation {
+            valueRequired: true
+            maxLength: 50
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: NAME_JTL
+            used: always
+        }
+    )
+
+    pageItem P5_UPDATED_BY (
+        type: displayOnly
+        label {
+            label: Updated By
+            alignment: left
+        }
+        layout {
+            sequence: 30
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: UPDATED_BY
+            used: always
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    pageItem P5_UPDATED_ON (
+        type: displayOnly
+        label {
+            label: Updated On
+            alignment: left
+        }
+        layout {
+            sequence: 40
+            region: @audit
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional
+            templateOptions: #DEFAULT#
+            formatMask: DD-MON-YYYY HH:MIPM
+        }
+        source {
+            type: databaseColumn
+            databaseColumn: UPDATED_ON
+            used: always
+        }
+        security {
+            encryptSessionState: false
+        }
+        help {
+            helpText: No help available for this page item.
+        }
+    )
+
+    button cancel (
+        buttonName: CANCEL
+        label: Cancel
+        layout {
+            sequence: 10
+            region: @maintain-jtl-with-clob
+            slot: close
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 4
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 40
+            region: @maintain-jtl-with-clob
+            slot: create
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--iconRight
+            ]
+            icon: fa-check
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: insert
+        }
+        serverSideCondition {
+            type: itemIsNull
+            item: P5_ID
+        }
+    )
+
+    button delete (
+        buttonName: DELETE
+        label: Delete
+        layout {
+            sequence: 20
+            region: @maintain-jtl-with-clob
+            slot: delete
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectUrl
+            targetUrl: javascript:apex.confirm(htmldb_delete_message,'DELETE');
+            executeValidations: false
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: delete
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P5_ID
+        }
+    )
+
+    button save (
+        buttonName: SAVE
+        label: Apply Changes
+        layout {
+            sequence: 30
+            region: @maintain-jtl-with-clob
+            slot: change
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--iconRight
+            ]
+            icon: fa-check
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: update
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P5_ID
+        }
+    )
+
+    process fetch-row-from-px-jtl-with-clob (
+        name: Fetch Row from PX_JTL_WITH_CLOB
+        type: autoRowFetch
+        source {
+            tableName: PX_JTL_WITH_CLOB
+            pkColumn: ID
+            pkItem: P5_ID
+        }
+        execution {
+            sequence: 10
+            point: afterHeader
+        }
+        advanced {
+            executionMappingIdentifier: 469892238256352888
+        }
+    )
+
+    process process-row-of-px-jtl-with-clob (
+        name: Process Row of PX_JTL_WITH_CLOB
+        type: autoRowProcessing
+        target {
+            tableName: PX_JTL_WITH_CLOB
+            pkColumn: ID
+            pkItem: P5_ID
+        }
+        execution {
+            sequence: 30
+        }
+        successMessage {
+            successMessage: Action Processed.
+        }
+        advanced {
+            executionMappingIdentifier: 469892627094352891
+        }
+    )
+
+    process reset-page (
+        name: reset page
+        type: clearSessionState
+        execution {
+            sequence: 40
+        }
+        advanced {
+            executionMappingIdentifier: 469893070644352893
+        }
+        serverSideCondition {
+            whenButtonPressed: @delete
+        }
+    )
+
+    branch (
+        execution {
+            sequence: 1
+        }
+        behavior {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+)
+

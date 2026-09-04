@@ -1,0 +1,87 @@
+app JTL9107 (
+    name: JTL Item Translation Demo
+    version: release 1.0
+    logo {
+        type: text
+        text: Translation Demo
+    }
+    navigation {
+        homeUrl: {
+            page: 1
+        }
+        loginUrl: {
+            page: LOGIN_DESKTOP
+        }
+    }
+    navigationMenu {
+        listTemplate: @/side-navigation-menu
+        templateOptions: #DEFAULT#
+        list: @desktop-navigation-menu
+    }
+    navigationBar {
+        list: @desktop-navigation-bar
+        listTemplate: @/navigation-bar
+        templateOptions: #DEFAULT#
+    }
+    userInterface {
+        currentTheme: @universal-theme
+    }
+    authentication {
+        scheme: @apex
+    }
+    authorization {
+        sourceForRoleOrGroupSchemes: authenticationScheme
+    }
+    security {
+        referrerPolicy: strictOriginWhenCrossOrigin
+    }
+    sessionStateProtection {
+        checksumSalt: C34545BD59D4D04C0A37C3A9864990179C78735EFCA848CFF2CAFE2F36B9E9FF
+        acceptPre202UrlChecksums: false
+    }
+    sessionManagement {
+        sessionStateCommits: immediate
+    }
+    globalization {
+        documentDirection: leftToRight
+        translationMethod: translationApps
+        languageDerivedFrom: session
+    }
+    progressiveWebApp {
+        enable: false
+    }
+    rowSearch {
+        tokenize: false
+    }
+    reportPrinting {
+        type: useInstanceSettings
+    }
+    runtime {
+        friendlyUrls: false
+        accessibleReadOnlyItems: false
+    }
+    advanced {
+        passEcid: false
+        modernizeApp: true
+    }
+
+    substitution EDIT_BUTTON (
+        value {
+            staticValue: <i class="fa fa-pencil-square-o"></i>
+        }
+    )
+
+    languageMapping (
+        appId: 106
+        language: fr
+        documentDirection: false
+    )
+
+    languageMapping (
+        appId: 107
+        language: es
+        documentDirection: false
+    )
+
+)
+

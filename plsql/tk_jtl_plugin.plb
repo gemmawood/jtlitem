@@ -162,7 +162,7 @@ is
   l_edit_languages          boolean := false;
   l_languages_list          gt_string;
   l_dialog_title            gt_string := p_item.plain_label;
-  l_messages                gt_string := p_plugin.attribute_02; -- for MLS messages
+  l_messages                gt_string;
 
   l_name              varchar2(255);
   l_display_value     gt_string;
@@ -175,15 +175,34 @@ is
 begin
   log('START', l_scope);
 
-  apex_debug.message('p_item.attribute_01 (Default language): %s', p_item.attribute_01);
-  apex_debug.message('p_item.attribute_02 (Edit languages): %s', p_item.attribute_02);
-  apex_debug.message('p_item.attribute_03 (Item Type): %s', p_item.attribute_03);
+  if p_plugin.attributes is not null then
+    l_messages := coalesce(p_plugin.attributes.get_varchar2('attribute_02'), p_plugin.attribute_02);
+    l_languages_list := apex_plugin_util.get_plsql_function_result(coalesce(p_plugin.attributes.get_varchar2('attribute_01'), p_plugin.attribute_01));
+  else
+    l_messages := p_plugin.attribute_02;
+    l_languages_list := apex_plugin_util.get_plsql_function_result(p_plugin.attribute_01);
+  end if;
 
-  l_default_language := coalesce(apex_plugin_util.replace_substitutions(p_item.attribute_01)
-                               , apex_util.get_session_lang);
-  l_edit_languages := apex_plugin_util.get_plsql_func_result_boolean(p_item.attribute_02);
-  l_languages_list := apex_plugin_util.get_plsql_function_result(p_plugin.attribute_01); -- Enabled Language List
-  l_item_type := coalesce(p_item.attribute_03, 'TEXT');
+  if p_item.attributes is not null then
+    apex_debug.message('p_item.attributes (Default language): %s', p_item.attributes.get_varchar2('attribute_01'));
+    apex_debug.message('p_item.attributes (Edit languages): %s', p_item.attributes.get_varchar2('attribute_02'));
+    apex_debug.message('p_item.attributes (Item Type): %s', p_item.attributes.get_varchar2('attribute_03'));
+
+    l_default_language := coalesce(p_item.attributes.get_varchar2('attribute_01', p_do_substitutions => true)
+                                 , apex_plugin_util.replace_substitutions(p_item.attribute_01)
+                                 , apex_util.get_session_lang);
+    l_edit_languages := apex_plugin_util.get_plsql_func_result_boolean(coalesce(p_item.attributes.get_varchar2('attribute_02'), p_item.attribute_02));
+    l_item_type := coalesce(p_item.attributes.get_varchar2('attribute_03'), p_item.attribute_03, 'TEXT');
+  else
+    apex_debug.message('p_item.attribute_01 (Default language): %s', p_item.attribute_01);
+    apex_debug.message('p_item.attribute_02 (Edit languages): %s', p_item.attribute_02);
+    apex_debug.message('p_item.attribute_03 (Item Type): %s', p_item.attribute_03);
+
+    l_default_language := coalesce(apex_plugin_util.replace_substitutions(p_item.attribute_01)
+                                 , apex_util.get_session_lang);
+    l_edit_languages := apex_plugin_util.get_plsql_func_result_boolean(p_item.attribute_02);
+    l_item_type := coalesce(p_item.attribute_03, 'TEXT');
+  end if;
   -- l_ig_mode := (p_item.component_type_id = apex_component.c_comp_type_ig_column);
 
   if l_default_language is null then
@@ -367,9 +386,20 @@ begin
 
   apex_debug.message('BEGIN');
 
-  l_default_language := coalesce(apex_plugin_util.replace_substitutions(p_item.attribute_01)
-                               , apex_util.get_session_lang);
-  l_languages_list := apex_plugin_util.get_plsql_function_result(p_plugin.attribute_01); -- Enabled Language List
+  if p_plugin.attributes is not null then
+    l_languages_list := apex_plugin_util.get_plsql_function_result(coalesce(p_plugin.attributes.get_varchar2('attribute_01'), p_plugin.attribute_01));
+  else
+    l_languages_list := apex_plugin_util.get_plsql_function_result(p_plugin.attribute_01);
+  end if;
+
+  if p_item.attributes is not null then
+    l_default_language := coalesce(p_item.attributes.get_varchar2('attribute_01', p_do_substitutions => true)
+                                 , apex_plugin_util.replace_substitutions(p_item.attribute_01)
+                                 , apex_util.get_session_lang);
+  else
+    l_default_language := coalesce(apex_plugin_util.replace_substitutions(p_item.attribute_01)
+                                 , apex_util.get_session_lang);
+  end if;
 
   apex_json.parse(p_param.value);
   apex_debug.message('parsing: %s', p_param.value);

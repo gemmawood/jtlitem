@@ -1,0 +1,23 @@
+authentication apex (
+    name: APEX
+    type: oracleApexAccounts
+    source {
+        plsqlCode:
+            ```plsql
+            procedure post_auth
+            is
+            begin
+              :G_LANG := nvl(apex_util.get_session_lang, 'en');
+            end;
+            
+            ```
+    }
+    loginProcessing {
+        postAuthenticationProcedureName: post_auth
+    }
+    sessionSharing {
+        type: custom
+        cookieName: INSUM
+    }
+)
+

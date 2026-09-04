@@ -1,0 +1,14 @@
+appItem G_APEX_NITRO_IMAGES (
+    security {
+        escapeSpecialChars: false
+    }
+)
+
+appItem G_LANG (
+    scope: global
+    security {
+        sessionStateProtection: unrestricted
+        escapeSpecialChars: false
+    }
+)
+

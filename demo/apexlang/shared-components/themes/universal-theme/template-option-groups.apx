@@ -1,0 +1,24 @@
+templateOptionGroup color-accents (
+    templateType: list
+    name: Color Accents
+    sequence: 50
+    settings {
+        nullText: Default
+    }
+    advanced {
+        identifier: COLOR_ACCENTS
+    }
+)
+
+templateOptionGroup color-accents (
+    templateType: report
+    name: Color Accents
+    sequence: 50
+    settings {
+        nullText: Default
+    }
+    advanced {
+        identifier: COLOR_ACCENTS
+    }
+)
+

@@ -1,0 +1,296 @@
+page 6 (
+    name: JTL with IG
+    title: JTL with IG
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        serverSideCondition {
+            type: never
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region jtl-with-ig (
+        name: JTL with IG
+        type: interactiveGrid
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select ID,
+                       NAME_JTL,
+                       ALIAS,
+                       ACTIVE_IND
+                  from PX_PROJECTS
+                ```
+        }
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: #DEFAULT#
+        }
+        edit {
+            enabled: true
+            allowedOperations: [
+                add
+                update
+                delete
+            ]
+        }
+        performance {
+            lazyLoading: true
+        }
+        componentAppearance {
+            showNullValuesAs: -
+        }
+        toolbar {
+            controls: [
+                searchCol
+                searchField
+                actionsMenu
+                searchCol
+                searchField
+                actionsMenu
+                resetButton
+                saveButton
+            ]
+        }
+        download {
+            formats: [
+                csv
+                html
+                pdf
+                excel
+            ]
+        }
+        componentAdvanced {
+            initJavaScriptFunction:
+                ```javascript-browser
+                function (config)
+                    {
+                      config.defaultGridViewOptions = 
+                      {
+                        autoAddRow: false
+                      }
+                
+                return config;
+                }
+                ```
+        }
+        advanced {
+            savedReportMappingIdentifier: 10573964164815430
+        }
+
+        savedReport primary (
+            visibility: primary
+            view {
+                default: grid
+                stretchColumns: false
+            }
+            singleRowView {
+                displayedColumns: true
+            }
+
+            displayColumn (
+                column: @APEX$ROW_ACTION
+                layout {
+                    frozen: true
+                    sequence: 1
+                }
+            )
+
+            displayColumn (
+                column: @ID
+                layout {
+                    sequence: 2
+                }
+            )
+
+            displayColumn (
+                column: @NAME_JTL
+                layout {
+                    width: 180
+                    sequence: 3
+                }
+            )
+
+            displayColumn (
+                column: @ALIAS
+                layout {
+                    width: 179
+                    sequence: 4
+                }
+            )
+
+            displayColumn (
+                column: @ACTIVE_IND
+                layout {
+                    width: 96
+                    sequence: 5
+                }
+            )
+
+        )
+
+        column ACTIVE_IND (
+            type: checkbox
+            heading {
+                heading: Active?
+                alignment: center
+            }
+            layout {
+                sequence: 70
+                columnAlignment: center
+            }
+            validation {
+                valueRequired: true
+            }
+            source {
+                databaseColumn: ACTIVE_IND
+                dataType: varchar2
+            }
+            default {
+                type: static
+                staticValue: Y
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+                lovType: useLov
+            }
+        )
+
+        column ALIAS (
+            type: textField
+            heading {
+                heading: Alias
+            }
+            layout {
+                sequence: 60
+            }
+            validation {
+                maxLength: 32
+            }
+            source {
+                databaseColumn: ALIAS
+                dataType: varchar2
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+            }
+        )
+
+        column APEX$ROW_ACTION (
+            type: actionsMenu
+            layout {
+                sequence: 20
+            }
+        )
+
+        column APEX$ROW_SELECTOR (
+            type: rowSelector
+            layout {
+                sequence: 10
+            }
+        )
+
+        column ID (
+            type: hidden
+            layout {
+                sequence: 30
+            }
+            source {
+                databaseColumn: ID
+                dataType: number
+                primaryKey: true
+            }
+            exportPrinting {
+                includeInExportPrint: false
+            }
+        )
+
+        column NAME_JTL (
+            type: plugin/jtlItem
+            heading {
+                heading: Name
+            }
+            layout {
+                sequence: 40
+            }
+            validation {
+                valueRequired: true
+                maxLength: 500
+            }
+            source {
+                databaseColumn: NAME_JTL
+                dataType: varchar2
+            }
+            default {
+                duplicateCopiesExistingValue: false
+            }
+            enableUsersTo {
+                sort: false
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+    )
+
+    process save-interactive-grid-data (
+        name: " - Save Interactive Grid Data"
+        type: interactiveGridAutoRowProcessing
+        editableRegion: @jtl-with-ig
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 15529810028145832
+        }
+    )
+
+)
+

@@ -1,20 +1,3 @@
-button.jtlitem-modal-open {
-  padding: .4rem .8rem;
-  order: 3;
-}
-.t-Form-fieldContainer--large button.jtlitem-modal-open.a-Button {
-    padding: .8rem .9rem;
-}
-.t-Form-fieldContainer--xlarge button.jtlitem-modal-open.a-Button {
-    padding: 1.2rem;
-}
-
-
-.t-Form-fieldContainer--floatingLabel .t-Form-itemWrapper {
-    align-items: stretch;
-    width: 100%;
-}
-
 .jtlitem-content {
   margin: 0 10px;
 }
@@ -35,4 +18,3 @@ button.jtlitem-modal-open {
   position: relative;
   float: right;
 }
-

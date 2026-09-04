@@ -1,0 +1,138 @@
+customAttribute attribute_01 (
+    apexlangName: enabledLanguageList
+    attribute: 1
+    name: Enabled Language List
+    scope: app
+    type: plsqlFunctionBodyReturningVarchar2
+    validation {
+        required: true
+    }
+    appearance {
+        sequence: 10
+    }
+    default {
+        value: "return '[\"en\",\"fr\",\"es\"]';"
+    }
+    help {
+        helpText:
+            ```
+            The Enabled Language List must be a JavaScript array with the supported application languages. The sort order matters and the first language should be the Application's Primary Language.<br> 
+            It is recommended that when new languages are enabled for the applicating that the JSON columns be updated to include the new language.
+            ```
+    }
+)
+
+customAttribute attribute_01 (
+    apexlangName: sessionLanguage
+    attribute: 1
+    name: Session Language
+    appearance {
+        sequence: 20
+    }
+    help {
+        helpText: This is the language code for the current session. If empty, the plugin will use "apex_util.get_session_lang". Substitution Strings are also supported, for example &BROWSER_LANGUAGE.
+    }
+)
+
+customAttribute attribute_02 (
+    apexlangName: messages
+    attribute: 2
+    name: Messages
+    scope: app
+    type: textarea
+    validation {
+        required: true
+        maxLength: 4000
+    }
+    appearance {
+        sequence: 20
+    }
+    builder {
+        displayWidth: 80
+    }
+    default {
+        value:
+            ```
+            {
+               "applyChanges": "Ok",
+               "cancelButton": "Cancel",
+               "languageLabel": "Language",
+               "languageValue": "Translation",
+               "noDataFound": "No specified languages.",
+               "valueValidationError": "#LABEL# contains an invalid value."
+            }
+            ```
+    }
+    help {
+        helpText:
+            ```
+            Use this setting to specify what messages should be displayed to users in different parts of the plugin. The default values are:<br />
+            <pre>
+            {
+               "applyChanges": "Apply Changes",
+               "cancelButton": "Cancel",
+               "languageLabel": "Language",
+               "languageValue": "Translation",
+               "noDataFound": "No specified languages.",
+               "valueValidationError": "#LABEL# contains an invalid value."
+            }
+            </pre>
+            ```
+    }
+)
+
+customAttribute attribute_02 (
+    apexlangName: editLanguages
+    attribute: 2
+    name: Edit Languages
+    type: plsqlFunctionBodyReturningBoolean
+    validation {
+        required: true
+    }
+    appearance {
+        sequence: 30
+    }
+    default {
+        value: return true;
+    }
+    help {
+        helpText:
+            ```
+            Return true or false. When true a button to edit all the languages will be present. The button will open a dialog that will allow the user to edit all the languages specified in the "Language List" parameter.<br>
+            When false and a new record is created the "Installed Languages" Application plugin attribute will be used to seed all available languages.
+            ```
+    }
+)
+
+customAttribute attribute_03 (
+    apexlangName: subtype
+    attribute: 3
+    name: Subtype
+    type: selectList
+    validation {
+        required: true
+    }
+    appearance {
+        sequence: 10
+    }
+    default {
+        value: TEXT
+    }
+    help {
+        helpText: Will select the type of item to display: Regular Text Input or Text Area
+    }
+
+    entry text (
+        sequence: 10
+        display: Text
+        return: TEXT
+    )
+
+    entry textarea (
+        sequence: 20
+        display: Textarea
+        return: TEXTAREA
+    )
+
+)
+

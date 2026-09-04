@@ -1,0 +1,22 @@
+appProcess apex-nitro (
+    name: APEX Nitro
+    type: executeCode
+    source {
+        plsqlCode:
+            ```plsql
+            -- apex_application.g_flow_images := owa_util.get_cgi_env('APEX-Nitro');
+            :G_APEX_NITRO_IMAGES := owa_util.get_cgi_env('APEX-Nitro');
+            ```
+    }
+    execution {
+        sequence: -999
+    }
+    serverSideCondition {
+        type: expression
+        plsqlExpression: owa_util.get_cgi_env('APEX-Nitro') is not null
+    }
+    config {
+        buildOption: @dev-only
+    }
+)
+
