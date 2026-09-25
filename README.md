@@ -120,7 +120,7 @@ name_jtl      json
 
 Benefits: validity is inherent to the type (no check constraint needed), binary (OSON) storage with no 32k byte ceiling under multi-byte character sets, and `JSON_TABLE` works against it unchanged. See [demo/px_projects_json.sql](demo/px_projects_json.sql).
 
-**Support matrix**, verified with this demo app on APEX 26.1 / Oracle 23ai:
+**Support matrix**, verified with this demo app on APEX 26.1 / Oracle AI Database 26ai:
 
 | Access path | JSON-typed `_JTL` column |
 |---|---|
@@ -173,11 +173,13 @@ You'll also miss out of the JSON constraint on the column, but this is not a con
 * You found something? Please report an [Issue](https://github.com/rimblas/jtlitem/issues).
 
 ## Change Log
-### v2.0.0, August 18, 2026
+### v2.0.0, September 25, 2026
 * Re-exported from APEX 26.1 (current `wwv_flow_imp` export format). Older APEX versions should continue using v1.4.0.
 * Refreshed demo app: [demo/f9107.sql](demo/f9107.sql) and APEXlang source in [demo/apexlang](demo/apexlang) — APEX 26.1 export with Universal Theme refreshed, compatibility mode 26.1, legacy JavaScript/jQuery Migrate includes removed, and modern Form Regions (Page 3 and Page 7) demonstrating Form Initialization / Automatic Row Processing against JSON-typed `PX_PROJECTS2` columns. Supporting objects create those columns as native `JSON` and install views with `JSON_TABLE`. The original [demo/f107.sql](demo/f107.sql) remains for older APEX versions.
 * Plugin `p_version_identifier` is 2.0.0 (APEX 26.1 minimum).
-* Verified end-to-end on APEX 26.1 / Oracle 23ai — form pages, translation dialog, per-language validation, and Interactive Grid all work with no plugin code changes.
+* Plugin moved to the APEX 26.1 Procedure interface (API v3): render and validate read attributes through `p_item.attributes` / `p_plugin.attributes` (`APEX_T_PLUGIN_ATTRIBUTES`), and the deprecated Substitute Attribute Values setting is removed, so the Default Language attribute is substituted explicitly with `get_varchar2(..., p_do_substitutions => true)`.
+* Removed button padding/ordering CSS so Universal Theme controls the globe button's size and alignment, including with floating labels.
+* Verified end-to-end on APEX 26.1 / Oracle AI Database 26ai — form pages, translation dialog, per-language validation, and Interactive Grid.
 * Native `JSON` datatype columns documented with a verified support matrix (see [Native JSON Columns](#native-json-columns-oracle-21c23ai)) and a new example, [demo/px_projects_json.sql](demo/px_projects_json.sql).
 * Fixed [demo/px_projects2_vl.sql](demo/px_projects2_vl.sql): replaced the legacy `apex_json.to_xmltype`/`xmltable` extraction with `JSON_TABLE` — the old technique fails to compile (`PLS-306`) against JSON-typed columns.
 

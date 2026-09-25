@@ -2,7 +2,7 @@
   "app" : {
     "id" : 9107,
     "databaseSession" : {
-      "parsingSchema" : "CAVPROD"
+      "parsingSchema" : "JMR"
     }
   }
 }
