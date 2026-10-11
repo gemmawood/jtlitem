@@ -83,18 +83,6 @@ $.widget( "ui.jtlItem", {
 
     uiw._addCSSToTopLevel();
 
-    // helper function for finding the index position of our current displayed language
-    function language_index (j, l) {
-      var i = null,
-          idx = -1;
-      for (i = 0; j.length > i && idx == -1; i += 1) {
-        if (j[i].l === l) {
-          idx = i;
-        }
-      }
-      return idx;
-    }
-
     uiw._createPrivateStorage();
     uiw._initElements();
     uiw._initBaseElements();
@@ -114,7 +102,7 @@ $.widget( "ui.jtlItem", {
     uiw._initDataJSON(initJSON);
 
     // Which position language are we using
-    uiw._values.curr_lang_index = language_index(uiw._values.dataJSON, uiw.options.lang);
+    uiw._values.curr_lang_index = uiw._getLanguageIndex(uiw.options.lang);
     
     // Sync our JSON data-value attribute with the actual value in the correct language, but
     // also during page submit to make sure we submit the correct value 
@@ -216,21 +204,28 @@ $.widget( "ui.jtlItem", {
     apex.item.create(uiw.options.itemName, {
 
        setValue: function(pValue, pDisplayValue) {
+          var text;
+
           uiw.log( "apex.item.setValue", pValue, pDisplayValue);
 
+          // The JSON in pValue is the source of truth for every translation
           uiw._initDataJSON(JSON.parse(pValue || "{}"));
 
-          if (pDisplayValue || !pValue || pValue.length === 0) {
-              // empty pValue, we should be done
-              uiw._item$.val();
-          } else {
-              // NOT empty pValue
-              if (!pDisplayValue) {
-                pDisplayValue = uiw._getTL(uiw.options.lang);
-              }
+          // The new JSON may order its languages differently or leave ours out,
+          // so find our language again. The change and submit handlers write the
+          // item text into that position (see _syncJSONdata).
+          uiw._values.curr_lang_index = uiw._getLanguageIndex(uiw.options.lang);
 
-              uiw._item$.val(pDisplayValue);
+          // Show the translation of the current language. Only when the JSON has
+          // none do we use the display value, or an empty string without one.
+          text = uiw._getTL(uiw.options.lang);
+          if (text === undefined || text === null) {
+              text = pDisplayValue || "";
           }
+
+          // Always pass the text: .val() without an argument is a getter that
+          // leaves the previous text in the item for the change handler to save.
+          uiw._item$.val(text);
 
        },
        getValue: function() {
@@ -250,6 +245,8 @@ $.widget( "ui.jtlItem", {
        },
        displayValueFor: function (pValue) {
           var prevjtlJSON = {},
+              prevNewRecord,
+              prevLangIndex,
               jtlJSON = {},
               returnValue;
           // The IG calls this code to set the initial display values
@@ -263,11 +260,16 @@ $.widget( "ui.jtlItem", {
 
 
           }
+          // displayValueFor should NOT change state, so store everything that
+          // _initDataJSON changes (it also sets newRecord) and restore it below
           prevjtlJSON = uiw._values.dataJSON;  // store the prev value
-                                               // displayValueFor should NOT change state
+          prevNewRecord = uiw._values.newRecord;
+          prevLangIndex = uiw._values.curr_lang_index;
           uiw._initDataJSON(jtlJSON);
           returnValue = uiw._getTL(uiw.options.lang);
           uiw._initDataJSON(prevjtlJSON);      // restore the value
+          uiw._values.newRecord = prevNewRecord;
+          uiw._values.curr_lang_index = prevLangIndex;
 
           // Return plain text: IG escapes it through metadata.escape_output = true.
           // Escaping here as well would double-escape translations.
@@ -361,6 +363,22 @@ $.widget( "ui.jtlItem", {
   },
 
 
+  // get the index position of a language code in the dataJSON, or -1 if it's not there
+  _getLanguageIndex: function(langCode) {
+     var uiw = this,
+         j = uiw._values.dataJSON,
+         i = null,
+         idx = -1;
+
+     for (i = 0; j.length > i && idx == -1; i += 1) {
+       if (j[i].l === langCode) {
+         idx = i;
+       }
+     }
+     return idx;
+  },
+
+
 
   // expects a jtlJSON structure or an empty object
   _initDataJSON: function(jtlJSON){
@@ -420,9 +438,15 @@ $.widget( "ui.jtlItem", {
           uiw._values.dataJSON[i].tl = uiw._item$.val();
         }
      }
-     else {
+     else if (uiw._values.curr_lang_index >= 0) {
         // save the new text into the JSON structure for the current language
         uiw._values.dataJSON[uiw._values.curr_lang_index].tl = uiw._item$.val();
+     }
+     else if (uiw._item$.val() !== "") {
+        // The JSON has no entry for the current language. Add one so the text is
+        // saved, it must never end up in another language.
+        uiw._values.dataJSON.push({"l": uiw.options.lang, "tl": uiw._item$.val()});
+        uiw._values.curr_lang_index = uiw._values.dataJSON.length - 1;
      }
 
      uiw._syncLanguageMap();
@@ -461,14 +485,19 @@ $.widget( "ui.jtlItem", {
 
      uiw._elements.$dialogContent.find('.jtlitem-value').each(function(i,el){
         // loop through all dialog elements and store translations
-        // back into the dataJSON structure
+        // back into the dataJSON structure.
+        // Find each language by its code: the JSON may order its languages
+        // differently than the configuration, leave some out or have more.
+        var idx = uiw._getLanguageIndex(el.dataset.lang);
 
         // uiw.log(i + "(" + el.dataset.lang + "):" + el.value);
 
-        uiw._values.dataJSON[i].l = el.dataset.lang;
-        uiw._values.dataJSON[i].tl = el.value;
-        if (uiw._values.curr_lang_index === i) {
-           display_value = el.value;
+        if (idx >= 0) {
+           uiw._values.dataJSON[idx].tl = el.value;
+        }
+        else if (el.value !== "") {
+           // no entry for this language yet, add one so the text is saved
+           uiw._values.dataJSON.push({"l": el.dataset.lang, "tl": el.value});
         }
 
      });
@@ -478,7 +507,13 @@ $.widget( "ui.jtlItem", {
      // we're done "saving" back from the dialog, clear the newRecord flag
      uiw._values.newRecord = false;
 
-     uiw._item$.val(display_value);
+     // the positions of the languages may have changed, find ours again
+     uiw._values.curr_lang_index = uiw._getLanguageIndex(uiw.options.lang);
+
+     display_value = uiw._getTL(uiw.options.lang);
+     if (display_value !== undefined && display_value !== null) {
+        uiw._item$.val(display_value);
+     }
      uiw._signalChange();
 
      uiw._elements.$dialog.dialog('close'); // this should cascade to remove the dialog
@@ -507,7 +542,6 @@ $.widget( "ui.jtlItem", {
      var uiw = this,
          DIALOG_CLASS = 'ui-dialog',  // we prefer it to 'ui-dialog--apex' to avoid re-centering
          langTable,
-         curr_lang = uiw._values.curr_lang_index,
          dialogPosition,
          dialogHtml;
 
@@ -528,20 +562,26 @@ $.widget( "ui.jtlItem", {
            // ' <tr>\n';
 
      $.each(uiw._values.languages, function( index, lang ) {
+       // the translation of this language, the JSON may not have one
+       var translation = uiw._getTL(lang);
+       if (translation === undefined || translation === null) {
+         translation = "";
+       }
+
        langTable +=
-       ' <tr' + (curr_lang==index? ' class="selected"':'') + '>\n' +
+       ' <tr' + (lang === uiw.options.lang? ' class="selected"':'') + '>\n' +
        '  <td class="t-Report-cell t-Form-inputContainer u-tC">' + apex.util.escapeHTMLAttr(lang) + '</td>' +
        '  <td class="t-Report-cell t-Form-inputContainer u-tL">';
        if (uiw.options.itemType === "TEXT") {
          langTable +=
-         '    <input type="text" class="text_field apex-item-text jtlitem-value" data-lang="' + lang + '" value="' + apex.util.escapeHTMLAttr(uiw._getTL(lang)) + '" size="' + uiw._values.fieldSize + '" maxlength="' + uiw._values.fieldMaxLength + '"></td>';
+         '    <input type="text" class="text_field apex-item-text jtlitem-value" data-lang="' + lang + '" value="' + apex.util.escapeHTMLAttr(translation) + '" size="' + uiw._values.fieldSize + '" maxlength="' + uiw._values.fieldMaxLength + '"></td>';
        }
        else {
          langTable +=
          '    <textarea class="textarea apex-item-textarea jtlitem-value" data-lang="' + lang + '"' +
               ' cols="' + uiw._values.fieldSize + '" rows="' + uiw._values.fieldRows + '"' + 
               ' maxlength="' + uiw._values.fieldMaxLength + '"' + 
-              '>' + apex.util.escapeHTMLAttr(uiw._getTL(lang)) + '</textarea>';
+              '>' + apex.util.escapeHTMLAttr(translation) + '</textarea>';
        }
 
        langTable +=
