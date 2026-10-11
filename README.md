@@ -174,6 +174,7 @@ You'll also miss out of the JSON constraint on the column, but this is not a con
 
 ## Change Log
 ### v2.0.0, September 25, 2026
+* Security fix (October 11, 2026): Interactive Grid translations are escaped by APEX and displayed as text, preventing stored HTML/script injection without double-escaping or changing the stored JSON.
 * Re-exported from APEX 26.1 (current `wwv_flow_imp` export format). Older APEX versions should continue using v1.4.0.
 * Refreshed demo app: [demo/f9107.sql](demo/f9107.sql) and APEXlang source in [demo/apexlang](demo/apexlang) — APEX 26.1 export with Universal Theme refreshed, compatibility mode 26.1, legacy JavaScript/jQuery Migrate includes removed, and modern Form Regions (Page 3 and Page 7) demonstrating Form Initialization / Automatic Row Processing against JSON-typed `PX_PROJECTS2` columns. Supporting objects create those columns as native `JSON` and install views with `JSON_TABLE`. The original [demo/f107.sql](demo/f107.sql) remains for older APEX versions.
 * Plugin `p_version_identifier` is 2.0.0 (APEX 26.1 minimum).

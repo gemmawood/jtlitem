@@ -323,7 +323,7 @@ begin
   log('START', l_scope);
 
   -- apex_debug.message('p_item.value %s', p_param.value);
-  p_result.escape_output := false;
+  p_result.escape_output := true;
 end metadata;
 
 

@@ -269,6 +269,8 @@ $.widget( "ui.jtlItem", {
           returnValue = uiw._getTL(uiw.options.lang);
           uiw._initDataJSON(prevjtlJSON);      // restore the value
 
+          // Return plain text: IG escapes it through metadata.escape_output = true.
+          // Escaping here as well would double-escape translations.
           return returnValue;
        }
     });
